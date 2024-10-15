@@ -21,14 +21,14 @@ class AlarmRepositoryImpl @Inject constructor(
     }
 
     override suspend fun addAlarm(alarm: AlarmEntity) {
-        TODO("Not yet implemented")
+        alarmDao.addAlarm(mapper.mapEntityToModel(alarm))
     }
 
     override suspend fun editAlarm(alarm: AlarmEntity) {
-        TODO("Not yet implemented")
+        alarmDao.addAlarm(mapper.mapEntityToModel(alarm))
     }
 
     override suspend fun deleteAlarm(alarmId: Int) {
-        TODO("Not yet implemented")
+        alarmDao.deleteAlarm(alarmId)
     }
 }
