@@ -53,7 +53,8 @@ dependencies {
     implementation(libs.dagger)
     annotationProcessor(libs.dagger.compiler)
 
-    implementation (libs.androidx.room.runtime)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
     annotationProcessor (libs.androidx.room.compiler)
     ksp (libs.room.compiler)
 }
