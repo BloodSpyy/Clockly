@@ -1,6 +1,6 @@
 package com.bloodpy.clockly.domain.entities
 
-data class Alarm (
+data class AlarmEntity (
     val id: Int,
     val alarmTime: Long,
     val isActive: Boolean
