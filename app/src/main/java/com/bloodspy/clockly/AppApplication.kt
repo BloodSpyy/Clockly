@@ -1,9 +1,11 @@
 package com.bloodspy.clockly
 
 import android.app.Application
+import com.bloodspy.clockly.di.DaggerClocklyComponent
 
 class AppApplication: Application() {
     val component by lazy {
-        //todo сделай реализацию компонента
+        DaggerClocklyComponent.factory()
+            .create(this)
     }
 }
