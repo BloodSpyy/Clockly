@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GetAlarmsUseCase @Inject constructor(private val alarmRepository: AlarmRepository) {
-    suspend operator fun invoke(): Flow<List<AlarmEntity>> {
+    operator fun invoke(): Flow<List<AlarmEntity>> {
         return alarmRepository.getAlarms()
     }
 }

@@ -4,7 +4,7 @@ import com.bloodspy.clockly.domain.entities.AlarmEntity
 import kotlinx.coroutines.flow.Flow
 
 interface AlarmRepository {
-    suspend fun getAlarms(): Flow<List<AlarmEntity>>
+    fun getAlarms(): Flow<List<AlarmEntity>>
 
     suspend fun getAlarm(alarmId: Int): AlarmEntity
 
