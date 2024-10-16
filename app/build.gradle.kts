@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.bloodpy.clockly"
+    namespace = "com.bloodspy.clockly"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.bloodpy.clockly"
+        applicationId = "com.bloodspy.clockly"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -53,8 +53,11 @@ dependencies {
     implementation(libs.dagger)
     annotationProcessor(libs.dagger.compiler)
 
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    annotationProcessor (libs.androidx.room.compiler)
-    ksp (libs.room.compiler)
+
+    val room_version = "2.6.1"
+
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+    ksp("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
 }
