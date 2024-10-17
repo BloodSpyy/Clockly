@@ -58,9 +58,6 @@ dependencies {
     annotationProcessor(libs.androidx.room.compiler)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
-<<<<<<< HEAD
-=======
 
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
->>>>>>> presentation_layer
 }
