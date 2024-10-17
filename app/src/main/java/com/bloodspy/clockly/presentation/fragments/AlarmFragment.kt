@@ -56,6 +56,8 @@ class AlarmFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         observeViewModel()
+        setupRecyclerView()
+        setupAdapterListeners()
         setupOnClickListeners()
     }
 
@@ -110,6 +112,12 @@ class AlarmFragment : Fragment() {
 
     private fun setupRecyclerView() {
         binding.recyclerViewAlarms.adapter = alarmAdapter
+    }
+
+    private fun setupAdapterListeners() {
+        alarmAdapter.onChangedEnableState = {
+            viewModel.changeEnableState(it)
+        }
     }
 
     companion object {

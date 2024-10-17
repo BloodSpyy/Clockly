@@ -8,4 +8,7 @@
     <color name="enable_thumb_blue">#1c45ff</color>
 
     <color name="grey">#e5e5ea</color>
+
+    <color name="inactive_menu_item">#666769</color>
+    <color name="active_menu_item">#000000</color>
 </resources>

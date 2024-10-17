@@ -28,10 +28,11 @@
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/switchAlarm"
-            android:theme="@style/switchAlarm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minHeight="48dp"
             android:padding="10dp"
+            android:theme="@style/switchAlarm"
             app:layout_constraintBottom_toBottomOf="@id/textViewAlarmTime"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/textViewAlarmTime"

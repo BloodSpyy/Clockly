@@ -14,6 +14,8 @@ import java.util.Locale
 class AlarmAdapter : ListAdapter<AlarmEntity, AlarmViewHolder>(
     AlarmDiffCallback()
 ) {
+    var onChangedEnableState: ((AlarmEntity) -> Unit)? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmViewHolder {
         val binding = ItemAlarmBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -27,6 +29,12 @@ class AlarmAdapter : ListAdapter<AlarmEntity, AlarmViewHolder>(
         val alarm = getItem(position)
 
         with(holder.binding) {
+            switchAlarm.setOnClickListener {
+                onChangedEnableState?.invoke(alarm) ?: throw RuntimeException(
+                    "onChangedEnableState is null"
+                )
+            }
+
             textViewAlarmTime.text = parseTime(alarm.alarmTime)
             switchAlarm.isChecked = alarm.isActive
         }
