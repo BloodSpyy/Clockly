@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bloodspy.clockly.AppApplication
 import com.bloodspy.clockly.databinding.FragmentAlarmBinding
+import com.bloodspy.clockly.presentation.recyclerViewUtils.adapter.AlarmAdapter
 import com.bloodspy.clockly.presentation.viewmodels.AlarmsViewModel
 import com.bloodspy.clockly.presentation.viewmodels.factory.ViewModelFactory
 import kotlinx.coroutines.launch
@@ -28,6 +29,8 @@ class AlarmFragment : Fragment() {
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[AlarmsViewModel::class.java]
     }
+
+    private val alarmAdapter by lazy { AlarmAdapter() }
 
     override fun onAttach(context: Context) {
         injectDependency()
@@ -70,7 +73,7 @@ class AlarmFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.alarms().collect {
-                    //todo делай submit list в recycler view
+                    alarmAdapter.submitList(it)
                 }
             }
         }
@@ -103,6 +106,10 @@ class AlarmFragment : Fragment() {
     private fun injectDependency() {
         (requireActivity().application as AppApplication).component
             .inject(this)
+    }
+
+    private fun setupRecyclerView() {
+        binding.recyclerViewAlarms.adapter = alarmAdapter
     }
 
     companion object {
