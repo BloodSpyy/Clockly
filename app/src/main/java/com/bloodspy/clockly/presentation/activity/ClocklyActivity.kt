@@ -1,4 +1,4 @@
-package com.bloodspy.clockly.presentation
+package com.bloodspy.clockly.presentation.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -13,5 +13,7 @@ class ClocklyActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_clockly)
+
+
     }
 }
