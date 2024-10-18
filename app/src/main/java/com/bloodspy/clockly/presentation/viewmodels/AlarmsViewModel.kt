@@ -20,8 +20,8 @@ class AlarmsViewModel @Inject constructor(
     getAlarmsUseCase: GetAlarmsUseCase,
     private val deleteAlarmUseCase: DeleteAlarmUseCase,
     private val editAlarmUseCase: EditAlarmUseCase,
-    private val cancelAlarmUseCase: CancelAlarmUseCase,
-    private val scheduleAlarmUseCase: ScheduleAlarmUseCase
+//    private val cancelAlarmUseCase: CancelAlarmUseCase,
+//    private val scheduleAlarmUseCase: ScheduleAlarmUseCase
 ) : ViewModel() {
 
     val alarms = getAlarmsUseCase
@@ -29,11 +29,11 @@ class AlarmsViewModel @Inject constructor(
     fun changeEnableState(alarmEntity: AlarmEntity) {
         val isActive = alarmEntity.isActive
 
-        if(isActive) {
-            cancelAlarmUseCase()
-        } else {
-            scheduleAlarmUseCase(alarmEntity.alarmTime)
-        }
+//        if(isActive) {
+//            cancelAlarmUseCase()
+//        } else {
+//            scheduleAlarmUseCase(alarmEntity.alarmTime)
+//        }
 
         viewModelScope.launch {
             val newAlarmEntity = alarmEntity.copy(isActive = !isActive)
@@ -43,7 +43,7 @@ class AlarmsViewModel @Inject constructor(
     }
 
     fun deleteAlarm(alarmEntity: AlarmEntity) {
-        cancelAlarmUseCase()
+//        cancelAlarmUseCase()
 
         viewModelScope.launch {
             deleteAlarmUseCase(alarmEntity.id)

@@ -99,6 +99,8 @@ class AlarmFragment : Fragment() {
 
 
     companion object {
+        const val BACKSTACK_NAME = "alarm_fragment"
+
         private const val SCREEN_MODE = "screen_mode"
         private const val ALARM_ID = "alarm_id"
 

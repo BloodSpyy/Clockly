@@ -17,19 +17,29 @@ class ClocklyActivity : AppCompatActivity(), AlarmsFragment.OnClickAddButtonList
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_clockly)
 
-        if(savedInstanceState == null) {
-            startFragment(AlarmsFragment.newInstance())
+        if (savedInstanceState == null) {
+            with(AlarmsFragment) {
+                startFragment(newInstance(), null)
+            }
         }
     }
 
     override fun onClickAddButton() {
-        startFragment(AlarmFragment.newInstanceAddMode())
+        with(AlarmFragment) {
+            startFragment(newInstanceAddMode(), BACKSTACK_NAME)
+        }
     }
 
-    private fun startFragment(fragment: Fragment) {
-            supportFragmentManager.beginTransaction()
+    private fun startFragment(fragment: Fragment, nameForBackStack: String?) {
+        with(supportFragmentManager) {
+            val transaction = beginTransaction()
                 .replace(binding.alarmsContainer.id, fragment)
-                .commit()
-            //todo потести и реши, нужно ли тут добавлять его в backstack
+
+            if (nameForBackStack != null) {
+                transaction.addToBackStack(nameForBackStack)
+            }
+
+            transaction.commit()
+        }
     }
 }
