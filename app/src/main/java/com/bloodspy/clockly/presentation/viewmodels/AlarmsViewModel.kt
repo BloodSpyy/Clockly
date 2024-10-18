@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bloodspy.clockly.domain.entities.AlarmEntity
 import com.bloodspy.clockly.domain.usecases.AddAlarmUseCase
+import com.bloodspy.clockly.domain.usecases.CancelAlarmUseCase
 import com.bloodspy.clockly.domain.usecases.DeleteAlarmUseCase
 import com.bloodspy.clockly.domain.usecases.EditAlarmUseCase
 import com.bloodspy.clockly.domain.usecases.GetAlarmsUseCase
+import com.bloodspy.clockly.domain.usecases.ScheduleAlarmUseCase
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -15,24 +17,34 @@ import java.util.Locale
 import javax.inject.Inject
 
 class AlarmsViewModel @Inject constructor(
+    getAlarmsUseCase: GetAlarmsUseCase,
     private val deleteAlarmUseCase: DeleteAlarmUseCase,
     private val editAlarmUseCase: EditAlarmUseCase,
-    getAlarmsUseCase: GetAlarmsUseCase,
+    private val cancelAlarmUseCase: CancelAlarmUseCase,
+    private val scheduleAlarmUseCase: ScheduleAlarmUseCase
 ) : ViewModel() {
 
     val alarms = getAlarmsUseCase
 
     fun changeEnableState(alarmEntity: AlarmEntity) {
-        //todo не забудь тут отменять alarm manager ( проверяй is active и от этого отталкивайся)
+        val isActive = alarmEntity.isActive
+
+        if(isActive) {
+            cancelAlarmUseCase()
+        } else {
+            scheduleAlarmUseCase(alarmEntity.alarmTime)
+        }
+
         viewModelScope.launch {
-            val newAlarmEntity = alarmEntity.copy(isActive = !alarmEntity.isActive)
+            val newAlarmEntity = alarmEntity.copy(isActive = !isActive)
 
             editAlarmUseCase(newAlarmEntity)
         }
     }
 
     fun deleteAlarm(alarmEntity: AlarmEntity) {
-        //todo не забудь тут отменять alarm manager
+        cancelAlarmUseCase()
+
         viewModelScope.launch {
             deleteAlarmUseCase(alarmEntity.id)
         }
