@@ -22,7 +22,7 @@ class ClocklyActivity : AppCompatActivity() {
 
     private fun startAlarmFragment() {
         supportFragmentManager.beginTransaction()
-            .replace(binding.clocklyContainer.id, AlarmFragment.newInstance(this))
+            .replace(binding.clocklyContainer.id, AlarmFragment.newInstance())
             .commit()
             //todo потести и реши, нужно ли тут добавлять его в backstack
     }

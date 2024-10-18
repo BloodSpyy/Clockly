@@ -10,6 +10,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.bloodspy.clockly.AppApplication
 import com.bloodspy.clockly.databinding.FragmentAlarmBinding
 import com.bloodspy.clockly.presentation.recyclerViewUtils.adapter.AlarmAdapter
@@ -115,12 +117,40 @@ class AlarmFragment : Fragment() {
     }
 
     private fun setupAdapterListeners() {
+        setupOnChangedEnableState()
+        setupSwipeListener()
+    }
+
+    private fun setupOnChangedEnableState() {
         alarmAdapter.onChangedEnableState = {
             viewModel.changeEnableState(it)
         }
     }
 
+    private fun setupSwipeListener() {
+        val callback = object : ItemTouchHelper.SimpleCallback(
+            NOT_USED,
+            ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder,
+            ): Boolean = false
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val alarm = alarmAdapter.currentList[viewHolder.adapterPosition]
+
+                viewModel.deleteAlarm(alarm)
+            }
+        }
+
+        ItemTouchHelper(callback).attachToRecyclerView(binding.recyclerViewAlarms)
+    }
+
     companion object {
-        fun newInstance(context: Context): AlarmFragment = AlarmFragment()
+        private const val NOT_USED = 0
+
+        fun newInstance(): AlarmFragment = AlarmFragment()
     }
 }

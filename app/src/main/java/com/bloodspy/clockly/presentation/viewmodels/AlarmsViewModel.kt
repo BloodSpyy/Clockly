@@ -35,6 +35,4 @@ class AlarmsViewModel @Inject constructor(
             deleteAlarmUseCase(alarmEntity.id)
         }
     }
-
-
 }
