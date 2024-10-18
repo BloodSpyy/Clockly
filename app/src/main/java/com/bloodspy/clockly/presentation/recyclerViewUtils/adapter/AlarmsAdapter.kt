@@ -5,25 +5,25 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.bloodspy.clockly.databinding.ItemAlarmBinding
 import com.bloodspy.clockly.domain.entities.AlarmEntity
-import com.bloodspy.clockly.presentation.recyclerViewUtils.callback.AlarmDiffCallback
-import com.bloodspy.clockly.presentation.recyclerViewUtils.viewholder.AlarmViewHolder
+import com.bloodspy.clockly.presentation.recyclerViewUtils.callback.AlarmsDiffCallback
+import com.bloodspy.clockly.presentation.recyclerViewUtils.viewholder.AlarmsViewHolder
 import com.bloodspy.clockly.utils.parseTime
 
-class AlarmAdapter : ListAdapter<AlarmEntity, AlarmViewHolder>(
-    AlarmDiffCallback()
+class AlarmsAdapter : ListAdapter<AlarmEntity, AlarmsViewHolder>(
+    AlarmsDiffCallback()
 ) {
     var onChangedEnableState: ((AlarmEntity) -> Unit)? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmsViewHolder {
         val binding = ItemAlarmBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
         )
-        return AlarmViewHolder(binding)
+        return AlarmsViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: AlarmViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: AlarmsViewHolder, position: Int) {
         val alarm = getItem(position)
 
         with(holder.binding) {

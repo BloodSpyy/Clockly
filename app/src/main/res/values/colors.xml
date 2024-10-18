@@ -11,4 +11,7 @@
 
     <color name="inactive_menu_item">#666769</color>
     <color name="active_menu_item">#000000</color>
+
+    <color name="button_background">#007AFF</color>
+    <color name="button_foreground">#ffffff</color>
 </resources>

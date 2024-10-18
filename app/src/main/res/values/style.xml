@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="switchAlarm" parent="Theme.AppCompat.Light">
+
+    <style name="switchAlarmItem" parent="Theme.AppCompat.Light">
         <item name="colorControlActivated">@color/enable_thumb_blue</item>
         <item name="colorSwitchThumbNormal">@color/disable_thumb_gray</item>
         <item name="android:colorForeground">@color/disable_foreground_gray</item>
+    </style>
+
+    <style name="button">
+        <item name="backgroundTint">@color/button_background</item>
+    </style>
+
+    <style name="appName">
+        <item name="android:text">@string/app_name</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAlignment">center</item>
     </style>
 </resources>

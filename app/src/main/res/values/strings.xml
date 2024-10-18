@@ -1,8 +1,12 @@
 <resources>
     <string name="app_name">Clockly</string>
     <string name="add_alarm">Add alarm</string>
-    <string name="alarm">Alarm</string>
-    <string name="stopwatch">Stopwatch</string>
-    <string name="weather">Weather</string>
+    <string name="alarm_button">Alarm</string>
+    <string name="stopwatch_button">Stopwatch</string>
+    <string name="weather_button">Weather</string>
     <string name="alarm_notification">Будильник в %s</string>
+    <string name="hours_hint">Часы</string>
+    <string name="minutes_hint">Минуты</string>
+    <string name="cancel_button">Отменить</string>
+    <string name="save_button">Сохранить</string>
 </resources>

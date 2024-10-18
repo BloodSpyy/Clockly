@@ -3,7 +3,7 @@ package com.bloodspy.clockly.presentation.recyclerViewUtils.callback
 import androidx.recyclerview.widget.DiffUtil
 import com.bloodspy.clockly.domain.entities.AlarmEntity
 
-class AlarmDiffCallback : DiffUtil.ItemCallback<AlarmEntity>() {
+class AlarmsDiffCallback : DiffUtil.ItemCallback<AlarmEntity>() {
     override fun areItemsTheSame(oldItem: AlarmEntity, newItem: AlarmEntity): Boolean =
         oldItem.id == newItem.id
 

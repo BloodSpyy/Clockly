@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.bloodspy.clockly.R
 import com.bloodspy.clockly.databinding.ActivityClocklyBinding
-import com.bloodspy.clockly.presentation.fragments.AlarmFragment
+import com.bloodspy.clockly.presentation.fragments.AlarmsFragment
 
 class ClocklyActivity : AppCompatActivity() {
     private val binding by lazy {
@@ -22,7 +22,7 @@ class ClocklyActivity : AppCompatActivity() {
 
     private fun startAlarmFragment() {
         supportFragmentManager.beginTransaction()
-            .replace(binding.clocklyContainer.id, AlarmFragment.newInstance())
+            .replace(binding.clocklyContainer.id, AlarmsFragment.newInstance())
             .commit()
             //todo потести и реши, нужно ли тут добавлять его в backstack
     }
