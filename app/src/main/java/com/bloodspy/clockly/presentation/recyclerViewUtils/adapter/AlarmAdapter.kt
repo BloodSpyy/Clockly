@@ -7,9 +7,7 @@ import com.bloodspy.clockly.databinding.ItemAlarmBinding
 import com.bloodspy.clockly.domain.entities.AlarmEntity
 import com.bloodspy.clockly.presentation.recyclerViewUtils.callback.AlarmDiffCallback
 import com.bloodspy.clockly.presentation.recyclerViewUtils.viewholder.AlarmViewHolder
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import com.bloodspy.clockly.utils.parseTime
 
 class AlarmAdapter : ListAdapter<AlarmEntity, AlarmViewHolder>(
     AlarmDiffCallback()
@@ -38,13 +36,5 @@ class AlarmAdapter : ListAdapter<AlarmEntity, AlarmViewHolder>(
             textViewAlarmTime.text = parseTime(alarm.alarmTime)
             switchAlarm.isChecked = alarm.isActive
         }
-    }
-
-    private fun parseTime(timeInMillis: Long): String {
-        val timeInDate = Date(timeInMillis)
-
-        val simpleDataFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-
-        return simpleDataFormat.format(timeInDate)
     }
 }

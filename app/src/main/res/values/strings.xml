@@ -4,4 +4,5 @@
     <string name="alarm">Alarm</string>
     <string name="stopwatch">Stopwatch</string>
     <string name="weather">Weather</string>
+    <string name="alarm_notification">Будильник в %s</string>
 </resources>
