@@ -13,7 +13,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bloodspy.clockly.AppApplication
-import com.bloodspy.clockly.databinding.FragmentAlarmBinding
 import com.bloodspy.clockly.databinding.FragmentAlarmsBinding
 import com.bloodspy.clockly.presentation.recyclerViewUtils.adapter.AlarmsAdapter
 import com.bloodspy.clockly.presentation.viewmodels.AlarmsViewModel
@@ -22,6 +21,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AlarmsFragment : Fragment() {
+    private lateinit var onClickAddButtonListener: OnClickAddButtonListener
+
     private var _binding: FragmentAlarmsBinding? = null
     private val binding: FragmentAlarmsBinding
         get() = _binding ?: throw RuntimeException("FragmentAlarmBinding is null")
@@ -37,6 +38,8 @@ class AlarmsFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         injectDependency()
+
+        checkImplementListeners(context)
 
         super.onAttach(context)
     }
@@ -92,7 +95,7 @@ class AlarmsFragment : Fragment() {
 
     private fun setupAddAlarmClickListener() {
         binding.imageViewAddAlarm.setOnClickListener {
-            //todo делай интент в AlarmItemFragment
+            onClickAddButtonListener.onClickAddButton()
         }
     }
 
@@ -147,6 +150,18 @@ class AlarmsFragment : Fragment() {
         }
 
         ItemTouchHelper(callback).attachToRecyclerView(binding.recyclerViewAlarms)
+    }
+
+    private fun checkImplementListeners(context: Context) {
+        if (context is OnClickAddButtonListener) {
+            onClickAddButtonListener = context
+        } else {
+            throw RuntimeException("Activity must implement OnClickAddButtonListener")
+        }
+    }
+
+    interface OnClickAddButtonListener {
+        fun onClickAddButton()
     }
 
     companion object {
