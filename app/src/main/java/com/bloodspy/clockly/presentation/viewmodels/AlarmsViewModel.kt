@@ -23,6 +23,7 @@ class AlarmsViewModel @Inject constructor(
     val alarms = getAlarmsUseCase
 
     fun changeEnableState(alarmEntity: AlarmEntity) {
+        //todo не забудь тут отменять alarm manager ( проверяй is active и от этого отталкивайся)
         viewModelScope.launch {
             val newAlarmEntity = alarmEntity.copy(isActive = !alarmEntity.isActive)
 
@@ -31,6 +32,7 @@ class AlarmsViewModel @Inject constructor(
     }
 
     fun deleteAlarm(alarmEntity: AlarmEntity) {
+        //todo не забудь тут отменять alarm manager
         viewModelScope.launch {
             deleteAlarmUseCase(alarmEntity.id)
         }
