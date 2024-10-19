@@ -9,6 +9,7 @@ import com.bloodspy.clockly.domain.usecases.DeleteAlarmUseCase
 import com.bloodspy.clockly.domain.usecases.EditAlarmUseCase
 import com.bloodspy.clockly.domain.usecases.GetAlarmsUseCase
 import com.bloodspy.clockly.domain.usecases.ScheduleAlarmUseCase
+import com.bloodspy.clockly.utils.parseTime
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -24,7 +25,10 @@ class AlarmsViewModel @Inject constructor(
 //    private val scheduleAlarmUseCase: ScheduleAlarmUseCase
 ) : ViewModel() {
 
-    val alarms = getAlarmsUseCase
+    val alarms = getAlarmsUseCase().map {
+        it.map {
+        }
+    }
 
     fun changeEnableState(alarmEntity: AlarmEntity) {
         val isActive = alarmEntity.isActive

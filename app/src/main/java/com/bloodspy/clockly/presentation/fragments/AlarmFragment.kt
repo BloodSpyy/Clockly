@@ -5,9 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.bloodspy.clockly.databinding.FragmentAlarmBinding
+import com.bloodspy.clockly.presentation.viewmodels.AlarmViewModel
+import com.bloodspy.clockly.presentation.viewmodels.factory.ViewModelFactory
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class AlarmFragment : Fragment() {
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[AlarmViewModel::class.java]
+    }
+
     private var _binding: FragmentAlarmBinding? = null
     private val binding: FragmentAlarmBinding
         get() = _binding ?: throw RuntimeException("FragmentAlarmBinding is null")
@@ -87,7 +100,13 @@ class AlarmFragment : Fragment() {
     }
 
     private fun loadInitialValue() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val alarm = viewModel.alarm(alarmId)
 
+            val alarmTime = alarm.alarmTime
+
+            binding.timePickerAlarm.
+        }
     }
 
     private fun set24HourView() {

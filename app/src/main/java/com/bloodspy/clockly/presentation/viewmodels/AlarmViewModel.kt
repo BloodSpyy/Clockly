@@ -8,9 +8,11 @@ import com.bloodspy.clockly.domain.usecases.ScheduleAlarmUseCase
 import javax.inject.Inject
 
 class AlarmViewModel @Inject constructor(
-    private val getAlarmUseCase: GetAlarmUseCase,
+    getAlarmUseCase: GetAlarmUseCase,
     private val addAlarmUseCase: AddAlarmUseCase,
     private val editAlarmUseCase: EditAlarmUseCase,
     private val scheduleAlarmUseCase: ScheduleAlarmUseCase
 ): ViewModel() {
+    val alarm = getAlarmUseCase
+
 }

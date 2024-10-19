@@ -11,3 +11,7 @@ fun parseTime(timeInMillis: Long): String {
 
     return simpleDataFormat.format(timeInDate)
 }
+
+fun calculateHour(timeInMillis: Long): Int {
+    val Date
+}

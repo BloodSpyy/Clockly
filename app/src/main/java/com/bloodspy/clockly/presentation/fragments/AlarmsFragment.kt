@@ -24,16 +24,16 @@ import javax.inject.Inject
 class AlarmsFragment : Fragment() {
     private lateinit var onClickAddButtonListener: OnClickAddButtonListener
 
-    private var _binding: FragmentAlarmsBinding? = null
-    private val binding: FragmentAlarmsBinding
-        get() = _binding ?: throw RuntimeException("FragmentAlarmBinding is null")
-
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[AlarmsViewModel::class.java]
     }
+
+    private var _binding: FragmentAlarmsBinding? = null
+    private val binding: FragmentAlarmsBinding
+        get() = _binding ?: throw RuntimeException("FragmentAlarmBinding is null")
 
     private val alarmsAdapter by lazy { AlarmsAdapter() }
 
