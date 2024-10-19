@@ -105,7 +105,11 @@ class AlarmFragment : Fragment() {
 
             val alarmTime = alarm.alarmTime
 
-            binding.timePickerAlarm.
+            with(binding) {
+                timePickerAlarm.hour = viewModel.getHours(alarmTime)
+                timePickerAlarm.minute = viewModel.getMinutes(alarmTime)
+            }
+
         }
     }
 

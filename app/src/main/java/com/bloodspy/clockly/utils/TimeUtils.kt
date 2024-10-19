@@ -12,6 +12,6 @@ fun parseTime(timeInMillis: Long): String {
     return simpleDataFormat.format(timeInDate)
 }
 
-fun calculateHour(timeInMillis: Long): Int {
-    val Date
-}
+fun getHoursFromMillis(timeInMillis: Long): Int = (timeInMillis / 3_600_000).toInt()
+
+fun getMinutesFromMillis(timeInMillis: Long): Int = ((timeInMillis / 60_000) % 60).toInt()

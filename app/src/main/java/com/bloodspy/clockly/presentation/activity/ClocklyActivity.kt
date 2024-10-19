@@ -5,10 +5,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.bloodspy.clockly.R
 import com.bloodspy.clockly.databinding.ActivityClocklyBinding
+import com.bloodspy.clockly.domain.entities.AlarmEntity
 import com.bloodspy.clockly.presentation.fragments.AlarmFragment
 import com.bloodspy.clockly.presentation.fragments.AlarmsFragment
 
-class ClocklyActivity : AppCompatActivity(), AlarmsFragment.OnClickAddButtonListener {
+class ClocklyActivity : AppCompatActivity(),
+    AlarmsFragment.OnAddButtonClickListener,
+    AlarmsFragment.OnAlarmClickListener {
     private val binding by lazy {
         ActivityClocklyBinding.inflate(layoutInflater)
     }
@@ -24,9 +27,15 @@ class ClocklyActivity : AppCompatActivity(), AlarmsFragment.OnClickAddButtonList
         }
     }
 
-    override fun onClickAddButton() {
+    override fun onAddButtonClick() {
         with(AlarmFragment) {
             startFragment(newInstanceAddMode(), BACKSTACK_NAME)
+        }
+    }
+
+    override fun onAlarmClick(alarmEntity: AlarmEntity) {
+        with(AlarmFragment) {
+            startFragment(newInstanceEditMode(alarmEntity.id), BACKSTACK_NAME)
         }
     }
 
@@ -42,4 +51,6 @@ class ClocklyActivity : AppCompatActivity(), AlarmsFragment.OnClickAddButtonList
             transaction.commit()
         }
     }
+
+
 }
