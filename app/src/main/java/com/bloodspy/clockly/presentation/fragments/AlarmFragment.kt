@@ -38,6 +38,18 @@ class AlarmFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        set24HourView()
+        chooseScreenMode()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+
+        _binding = null
+    }
+
+    private fun chooseScreenMode() {
         when(screenMode) {
             ADD_MODE -> {
                 launchAddMode()
@@ -48,29 +60,38 @@ class AlarmFragment : Fragment() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-
-        _binding = null
-    }
-
     private fun launchAddMode() {
-        binding.buttonSave.setOnClickListener {
+        with(binding) {
+            buttonSave.setOnClickListener {
 
-        }
+            }
 
-        binding.buttonCancel.setOnClickListener {
+            buttonCancel.setOnClickListener {
 
+            }
         }
     }
 
     private fun launchEditMode() {
+        loadInitialValue()
 
+        with(binding) {
+            buttonSave.setOnClickListener {
+
+            }
+
+            buttonCancel.setOnClickListener {
+
+            }
+        }
     }
 
     private fun loadInitialValue() {
 
+    }
+
+    private fun set24HourView() {
+        binding.timePickerAlarm.setIs24HourView(true)
     }
 
     private fun parseParams() {
