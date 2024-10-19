@@ -2,6 +2,7 @@ package com.bloodspy.clockly.di.modules
 
 import androidx.lifecycle.ViewModel
 import com.bloodspy.clockly.di.keys.ViewModelKey
+import com.bloodspy.clockly.presentation.viewmodels.AlarmViewModel
 import com.bloodspy.clockly.presentation.viewmodels.AlarmsViewModel
 import dagger.Binds
 import dagger.Module
@@ -13,4 +14,9 @@ interface ViewModelModule {
     @IntoMap
     @ViewModelKey(AlarmsViewModel::class)
     fun bindAlarmsViewModel(alarmsViewModel: AlarmsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AlarmViewModel::class)
+    fun bindAlarmViewModel(alarmViewModel: AlarmViewModel): ViewModel
 }
