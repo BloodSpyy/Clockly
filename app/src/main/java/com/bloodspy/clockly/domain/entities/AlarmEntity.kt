@@ -4,6 +4,6 @@ import javax.inject.Inject
 
 data class AlarmEntity @Inject constructor(
     val id: Int,
-    val alarmTime: Long,
+    val alarmTime: String,
     val isActive: Boolean
 )
