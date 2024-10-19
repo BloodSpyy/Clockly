@@ -7,7 +7,7 @@ import com.bloodspy.clockly.databinding.ItemAlarmBinding
 import com.bloodspy.clockly.domain.entities.AlarmEntity
 import com.bloodspy.clockly.presentation.recyclerViewUtils.callback.AlarmsDiffCallback
 import com.bloodspy.clockly.presentation.recyclerViewUtils.viewholder.AlarmsViewHolder
-import com.bloodspy.clockly.utils.parseTime
+import com.bloodspy.clockly.utils.parseTimeToString
 
 class AlarmsAdapter : ListAdapter<AlarmEntity, AlarmsViewHolder>(
     AlarmsDiffCallback()
@@ -33,7 +33,7 @@ class AlarmsAdapter : ListAdapter<AlarmEntity, AlarmsViewHolder>(
                 )
             }
 
-            textViewAlarmTime.text = parseTime(alarm.alarmTime)
+            textViewAlarmTime.text = parseTimeToString(alarm.alarmTime)
             switchAlarm.isChecked = alarm.isActive
         }
     }
