@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import com.bloodspy.clockly.AppApplication
 import com.bloodspy.clockly.databinding.FragmentAlarmBinding
 import com.bloodspy.clockly.presentation.states.AlarmStates
@@ -80,7 +81,7 @@ class AlarmFragment : Fragment(){
                 calendar.set(hour, Calendar.HOUR_OF_DAY)
                 calendar.set(minute, Calendar.MINUTE)
 
-                val alarm = AlarmEntity()
+                viewModel.addAlarm(hour, minute)
             }
 
             textViewCancel.setOnClickListener {

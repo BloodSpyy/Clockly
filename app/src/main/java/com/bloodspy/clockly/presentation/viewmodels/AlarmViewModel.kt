@@ -38,14 +38,13 @@ class AlarmViewModel @Inject constructor(
     fun addAlarm(hour: Int, minute: Int) {
         _state.value = AlarmStates.Loading
 
-        val alarmTime = getMillisFromAlarmTime(hour, minute)
-
         val alarm = AlarmEntity(
-
+            alarmTime = getMillisFromAlarmTime(hour, minute)
         )
 
         viewModelScope.launch {
             addAlarmUseCase(
+                alarm
             )
 
             _state.value = AlarmStates.Success
