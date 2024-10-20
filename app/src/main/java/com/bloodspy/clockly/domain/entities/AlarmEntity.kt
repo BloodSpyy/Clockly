@@ -3,7 +3,7 @@ package com.bloodspy.clockly.domain.entities
 import javax.inject.Inject
 
 data class AlarmEntity @Inject constructor(
-    val id: Int,
+    var id: Int? = null,
     val alarmTime: String,
-    val isActive: Boolean
+    val isActive: Boolean,
 )
