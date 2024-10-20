@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import java.util.Calendar
 import javax.inject.Inject
 
-class AlarmFragment : Fragment(){
+class AlarmFragment : Fragment() {
     private lateinit var onEndWorkListener: OnEndWorkListener
 
     @Inject
@@ -99,7 +99,7 @@ class AlarmFragment : Fragment(){
 
         _binding = null
     }
-    
+
     private fun setup24HourView() {
         binding.timePickerAlarm.setIs24HourView(true)
     }
@@ -118,13 +118,10 @@ class AlarmFragment : Fragment(){
                         }
 
                         AlarmStates.Initial -> {
-                            val calendar = Calendar.getInstance()
+                            val alarmTime = viewModel.getCurrentTime()
 
-                            val hour = calendar.get(Calendar.HOUR_OF_DAY)
-                            val minute = calendar.get(Calendar.MINUTE)
-
-                            timePickerAlarm.hour = hour
-                            timePickerAlarm.minute = minute
+                            timePickerAlarm.hour = alarmTime.first
+                            timePickerAlarm.minute = alarmTime.second
                         }
 
                         AlarmStates.Loading -> {
@@ -133,7 +130,7 @@ class AlarmFragment : Fragment(){
                             textViewCancel.isEnabled = false
                         }
 
-                        AlarmStates.Success -> TODO()
+                        AlarmStates.Success -> onEndWorkListener.onEndWork()
                     }
                 }
             }
@@ -170,7 +167,7 @@ class AlarmFragment : Fragment(){
     }
 
     fun checkImplementListener(context: Context) {
-        if(context is OnEndWorkListener) {
+        if (context is OnEndWorkListener) {
             onEndWorkListener = context
         } else {
             throw RuntimeException("Activity must implement OnEndWorkListener")

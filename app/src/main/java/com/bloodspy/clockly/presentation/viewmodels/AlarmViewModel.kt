@@ -49,5 +49,13 @@ class AlarmViewModel @Inject constructor(
         }
     }
 
+    fun getCurrentTime(): Pair<Int, Int> {
+        val calendar = Calendar.getInstance()
+
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+
+        return Pair(hour, minute)
+    }
 
 }
