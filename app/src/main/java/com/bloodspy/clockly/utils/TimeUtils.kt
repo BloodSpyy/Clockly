@@ -1,8 +1,11 @@
 package com.bloodspy.clockly.utils
 
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+
+private val calendar = Calendar.getInstance()
 
 fun parseTime(timeInMillis: Long): String {
     val timeInDate = Date(timeInMillis)
@@ -12,6 +15,11 @@ fun parseTime(timeInMillis: Long): String {
     return simpleDataFormat.format(timeInDate)
 }
 
-fun calculateHour(timeInMillis: Long): Int {
-    val Date
+fun getMillisFromAlarmTime(hour: Int, minute: Int): Long {
+    calendar.set(hour, Calendar.HOUR_OF_DAY)
+    calendar.set(minute, Calendar.MINUTE)
+
+    return calendar.timeInMillis
 }
+
+
