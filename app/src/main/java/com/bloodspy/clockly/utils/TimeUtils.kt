@@ -5,8 +5,6 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-//todo подумай, тут нужно оставить такой или в каждом методе создавать свой календарь
-
 fun parseTime(timeInMillis: Long): String {
     val timeInDate = Date(timeInMillis)
 
