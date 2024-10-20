@@ -1,19 +1,26 @@
 package com.bloodspy.clockly.presentation.fragments
 
+import android.content.Context
 import android.os.Bundle
+import android.provider.AlarmClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.bloodspy.clockly.AppApplication
 import com.bloodspy.clockly.databinding.FragmentAlarmBinding
+import com.bloodspy.clockly.presentation.states.AlarmStates
 import com.bloodspy.clockly.presentation.viewmodels.AlarmViewModel
 import com.bloodspy.clockly.presentation.viewmodels.factory.ViewModelFactory
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import javax.inject.Inject
 
-class AlarmFragment : Fragment() {
+class AlarmFragment : Fragment(){
+    private lateinit var onEndWorkListener: OnEndWorkListener
+
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
@@ -27,6 +34,14 @@ class AlarmFragment : Fragment() {
 
     private var alarmId = UNDEFINED_ID
     private var screenMode = UNKNOWN_SCREEN_MODE
+
+    override fun onAttach(context: Context) {
+        injectDependency()
+
+        checkImplementListener(context)
+
+        super.onAttach(context)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,73 +63,90 @@ class AlarmFragment : Fragment() {
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        set24HourView()
-        chooseScreenMode()
+        setup24HourView()
+        subscribeViewModel()
+
+        with(binding) {
+            textViewSave.setOnClickListener {
+                val calendar = Calendar.getInstance()
+
+                val hour = timePickerAlarm.hour
+                val minute = timePickerAlarm.minute
+
+                calendar.set(hour, Calendar.HOUR_OF_DAY)
+                calendar.set(minute, Calendar.MINUTE)
+
+                val alarm = AlarmEntity()
+            }
+
+            textViewCancel.setOnClickListener {
+                onEndWorkListener.onEndWork()
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        //todo подумай, оставить здесь или перенести в onViewCreated()
+        if (screenMode == EDIT_MODE) {
+            viewModel.getAlarm(alarmId)
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
 
-
         _binding = null
     }
-
-    private fun chooseScreenMode() {
-        when(screenMode) {
-            ADD_MODE -> {
-                launchAddMode()
-            }
-            EDIT_MODE -> {
-                launchEditMode()
-            }
-        }
-    }
-
-    private fun launchAddMode() {
-        with(binding) {
-            buttonSave.setOnClickListener {
-
-            }
-
-            buttonCancel.setOnClickListener {
-
-            }
-        }
-    }
-
-    private fun launchEditMode() {
-        loadInitialValue()
-
-        with(binding) {
-            buttonSave.setOnClickListener {
-
-            }
-
-            buttonCancel.setOnClickListener {
-
-            }
-        }
-    }
-
-    private fun loadInitialValue() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            val alarm = viewModel.alarm(alarmId)
-
-            val alarmTime = alarm.alarmTime
-
-            with(binding) {
-                timePickerAlarm.hour = viewModel.getHours(alarmTime)
-                timePickerAlarm.minute = viewModel.getMinutes(alarmTime)
-            }
-
-        }
-    }
-
-    private fun set24HourView() {
+    
+    private fun setup24HourView() {
         binding.timePickerAlarm.setIs24HourView(true)
+    }
+
+    private fun subscribeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            with(binding) {
+                viewModel.state.collect {
+                    progressBarLoading.visibility = View.GONE
+                    textViewSave.isEnabled = true
+                    textViewCancel.isEnabled = true
+
+                    when (it) {
+                        is AlarmStates.DataLoaded -> {
+                            //todo внеси сюда часы и минуты с alarmEntity
+                        }
+
+                        AlarmStates.Initial -> {
+                            val calendar = Calendar.getInstance()
+
+                            val hour = calendar.get(Calendar.HOUR_OF_DAY)
+                            val minute = calendar.get(Calendar.MINUTE)
+
+                            timePickerAlarm.hour = hour
+                            timePickerAlarm.minute = minute
+                        }
+
+                        AlarmStates.Loading -> {
+                            progressBarLoading.visibility = View.VISIBLE
+                            textViewSave.isEnabled = false
+                            textViewCancel.isEnabled = false
+                        }
+
+                        AlarmStates.Success -> TODO()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun injectDependency() {
+        (requireActivity().application as AppApplication).component
+            .inject(this)
     }
 
     private fun parseParams() {
@@ -141,6 +173,17 @@ class AlarmFragment : Fragment() {
         }
     }
 
+    fun checkImplementListener(context: Context) {
+        if(context is OnEndWorkListener) {
+            onEndWorkListener = context
+        } else {
+            throw RuntimeException("Activity must implement OnEndWorkListener")
+        }
+    }
+
+    interface OnEndWorkListener {
+        fun onEndWork()
+    }
 
     companion object {
         const val BACKSTACK_NAME = "alarm_fragment"
