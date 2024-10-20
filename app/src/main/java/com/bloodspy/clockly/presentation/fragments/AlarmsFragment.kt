@@ -2,7 +2,6 @@ package com.bloodspy.clockly.presentation.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +14,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bloodspy.clockly.AppApplication
 import com.bloodspy.clockly.databinding.FragmentAlarmsBinding
+import com.bloodspy.clockly.domain.entities.AlarmEntity
 import com.bloodspy.clockly.presentation.recyclerViewUtils.adapter.AlarmsAdapter
 import com.bloodspy.clockly.presentation.viewmodels.AlarmsViewModel
 import com.bloodspy.clockly.presentation.viewmodels.factory.ViewModelFactory
@@ -22,7 +22,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AlarmsFragment : Fragment() {
-    private lateinit var onClickAddButtonListener: OnClickAddButtonListener
+    private lateinit var onAddButtonClickListener: OnAddButtonClickListener
+    private lateinit var onAlarmClickListener: OnAlarmClickListener
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -96,7 +97,7 @@ class AlarmsFragment : Fragment() {
 
     private fun setupAddAlarmClickListener() {
         binding.imageViewAddAlarm.setOnClickListener {
-            onClickAddButtonListener.onClickAddButton()
+            onAddButtonClickListener.onAddButtonClick()
         }
     }
 
@@ -122,13 +123,20 @@ class AlarmsFragment : Fragment() {
     }
 
     private fun setupAdapterListeners() {
-        setupOnChangedEnableState()
+        setupOnChangedEnableStateListener()
+        setupOnAlarmClickListener()
         setupSwipeListener()
     }
 
-    private fun setupOnChangedEnableState() {
-        alarmsAdapter.onChangedEnableState = {
+    private fun setupOnChangedEnableStateListener() {
+        alarmsAdapter.onChangedEnableStateListener = {
             viewModel.changeEnableState(it)
+        }
+    }
+
+    private fun setupOnAlarmClickListener() {
+        alarmsAdapter.onAlarmClickListener = {
+            onAlarmClickListener.onAlarmClick(it)
         }
     }
 
@@ -154,15 +162,22 @@ class AlarmsFragment : Fragment() {
     }
 
     private fun checkImplementListeners(context: Context) {
-        if (context is OnClickAddButtonListener) {
-            onClickAddButtonListener = context
+        if (context is OnAddButtonClickListener && context is OnAlarmClickListener) {
+            onAddButtonClickListener = context
+            onAlarmClickListener = context
         } else {
-            throw RuntimeException("Activity must implement OnClickAddButtonListener")
+            throw RuntimeException(
+                "Activity must implement OnAddButtonClickListener and OnAlarmClickListener"
+            )
         }
     }
 
-    interface OnClickAddButtonListener {
-        fun onClickAddButton()
+    interface OnAddButtonClickListener {
+        fun onAddButtonClick()
+    }
+
+    interface OnAlarmClickListener {
+        fun onAlarmClick(alarmEntity: AlarmEntity)
     }
 
     companion object {

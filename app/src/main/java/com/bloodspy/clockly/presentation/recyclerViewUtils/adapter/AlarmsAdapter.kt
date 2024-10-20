@@ -12,7 +12,8 @@ import com.bloodspy.clockly.utils.parseTimeToString
 class AlarmsAdapter : ListAdapter<AlarmEntity, AlarmsViewHolder>(
     AlarmsDiffCallback()
 ) {
-    var onChangedEnableState: ((AlarmEntity) -> Unit)? = null
+    var onChangedEnableStateListener: ((AlarmEntity) -> Unit)? = null
+    var onAlarmClickListener: ((AlarmEntity) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmsViewHolder {
         val binding = ItemAlarmBinding.inflate(
@@ -28,12 +29,23 @@ class AlarmsAdapter : ListAdapter<AlarmEntity, AlarmsViewHolder>(
 
         with(holder.binding) {
             switchAlarm.setOnClickListener {
-                onChangedEnableState?.invoke(alarm) ?: throw RuntimeException(
-                    "onChangedEnableState is null"
+                onChangedEnableStateListener?.invoke(alarm) ?: throw RuntimeException(
+                    "onChangedEnableStateListener is null"
                 )
             }
 
+<<<<<<< HEAD
             textViewAlarmTime.text = parseTimeToString(alarm.alarmTime)
+=======
+            textViewAlarmTime.setOnClickListener {
+                onAlarmClickListener?.invoke(alarm) ?: throw RuntimeException(
+                    "onAlarmClickListener is null"
+                )
+            }
+
+            //todo подумай как убрать здесь преобразования и перенести их отсюда
+            textViewAlarmTime.text = parseTime(alarm.alarmTime)
+>>>>>>> presentation_layer
             switchAlarm.isChecked = alarm.isActive
         }
     }

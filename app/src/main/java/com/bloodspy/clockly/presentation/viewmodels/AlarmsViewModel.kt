@@ -18,10 +18,7 @@ class AlarmsViewModel @Inject constructor(
 //    private val scheduleAlarmUseCase: ScheduleAlarmUseCase
 ) : ViewModel() {
 
-    val alarms = getAlarmsUseCase().map {
-        it.map {
-        }
-    }
+    val alarms = getAlarmsUseCase
 
     fun changeEnableState(alarmEntity: AlarmEntity) {
         val isActive = alarmEntity.isActive

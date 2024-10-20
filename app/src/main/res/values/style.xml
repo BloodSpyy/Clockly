@@ -7,10 +7,6 @@
         <item name="android:colorForeground">@color/disable_foreground_gray</item>
     </style>
 
-    <style name="button">
-        <item name="backgroundTint">@color/button_background</item>
-    </style>
-
     <style name="appName">
         <item name="android:text">@string/app_name</item>
         <item name="android:textSize">25sp</item>

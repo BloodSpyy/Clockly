@@ -5,6 +5,7 @@ import com.bloodspy.clockly.di.modules.DataModule
 import com.bloodspy.clockly.di.modules.DomainModule
 import com.bloodspy.clockly.di.modules.ViewModelModule
 import com.bloodspy.clockly.di.scopes.ClocklyAppScope
+import com.bloodspy.clockly.presentation.fragments.AlarmFragment
 import com.bloodspy.clockly.presentation.fragments.AlarmsFragment
 import dagger.BindsInstance
 import dagger.Component
@@ -14,6 +15,8 @@ import dagger.Component
 interface ClocklyComponent {
 
     fun inject(alarmsFragment: AlarmsFragment)
+
+    fun inject(alarmFragment: AlarmFragment)
 
     @Component.Factory
     interface ClocklyComponentFactory {
