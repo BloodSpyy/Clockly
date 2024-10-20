@@ -43,9 +43,7 @@ class AlarmViewModel @Inject constructor(
         )
 
         viewModelScope.launch {
-            addAlarmUseCase(
-                alarm
-            )
+            addAlarmUseCase(alarm)
 
             _state.value = AlarmStates.Success
         }

@@ -73,13 +73,8 @@ class AlarmFragment : Fragment(){
 
         with(binding) {
             textViewSave.setOnClickListener {
-                val calendar = Calendar.getInstance()
-
                 val hour = timePickerAlarm.hour
                 val minute = timePickerAlarm.minute
-
-                calendar.set(hour, Calendar.HOUR_OF_DAY)
-                calendar.set(minute, Calendar.MINUTE)
 
                 viewModel.addAlarm(hour, minute)
             }

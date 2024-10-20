@@ -5,7 +5,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-private val calendar = Calendar.getInstance()
+//todo подумай, тут нужно оставить такой или в каждом методе создавать свой календарь
 
 fun parseTime(timeInMillis: Long): String {
     val timeInDate = Date(timeInMillis)
@@ -16,8 +16,10 @@ fun parseTime(timeInMillis: Long): String {
 }
 
 fun getMillisFromAlarmTime(hour: Int, minute: Int): Long {
-    calendar.set(hour, Calendar.HOUR_OF_DAY)
-    calendar.set(minute, Calendar.MINUTE)
+    val calendar = Calendar.getInstance()
+
+    calendar.set(Calendar.HOUR_OF_DAY, hour)
+    calendar.set(Calendar.MINUTE, minute)
 
     return calendar.timeInMillis
 }
