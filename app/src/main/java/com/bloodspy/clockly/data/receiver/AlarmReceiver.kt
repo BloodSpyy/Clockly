@@ -10,7 +10,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getSystemService
 import com.bloodspy.clockly.R
-import com.bloodspy.clockly.utils.parseTimeToString
+import com.bloodspy.clockly.utils.parseTime
 
 class AlarmReceiver : BroadcastReceiver() {
     private var timeInMillis: Long = DEFAULT_TIME_IN_MILLIS
@@ -47,7 +47,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 .setContentText(
                     String.format(
                         getString(R.string.alarm_notification),
-                        parseTimeToString(timeInMillis)
+                        parseTime(timeInMillis)
                     )
                 )
                 .build()

@@ -7,7 +7,7 @@ import com.bloodspy.clockly.databinding.ItemAlarmBinding
 import com.bloodspy.clockly.domain.entities.AlarmEntity
 import com.bloodspy.clockly.presentation.recyclerViewUtils.callback.AlarmsDiffCallback
 import com.bloodspy.clockly.presentation.recyclerViewUtils.viewholder.AlarmsViewHolder
-import com.bloodspy.clockly.utils.parseTimeToString
+import com.bloodspy.clockly.utils.parseTime
 
 class AlarmsAdapter : ListAdapter<AlarmEntity, AlarmsViewHolder>(
     AlarmsDiffCallback()
@@ -34,9 +34,6 @@ class AlarmsAdapter : ListAdapter<AlarmEntity, AlarmsViewHolder>(
                 )
             }
 
-<<<<<<< HEAD
-            textViewAlarmTime.text = parseTimeToString(alarm.alarmTime)
-=======
             textViewAlarmTime.setOnClickListener {
                 onAlarmClickListener?.invoke(alarm) ?: throw RuntimeException(
                     "onAlarmClickListener is null"
@@ -45,7 +42,6 @@ class AlarmsAdapter : ListAdapter<AlarmEntity, AlarmsViewHolder>(
 
             //todo подумай как убрать здесь преобразования и перенести их отсюда
             textViewAlarmTime.text = parseTime(alarm.alarmTime)
->>>>>>> presentation_layer
             switchAlarm.isChecked = alarm.isActive
         }
     }

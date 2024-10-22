@@ -9,5 +9,5 @@ sealed class AlarmStates {
 
     data object Success: AlarmStates()
 
-    class DataLoaded(val alarmEntity: AlarmEntity): AlarmStates()
+    class DataLoaded(val hour: Int, val minute: Int): AlarmStates()
 }

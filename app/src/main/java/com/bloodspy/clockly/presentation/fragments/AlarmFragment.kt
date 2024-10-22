@@ -114,14 +114,16 @@ class AlarmFragment : Fragment() {
 
                     when (it) {
                         is AlarmStates.DataLoaded -> {
-                            //todo внеси сюда часы и минуты с alarmEntity
+                            timePickerAlarm.hour = it.hour
+                            timePickerAlarm.minute = it.minute
                         }
 
-                        AlarmStates.Initial -> {
-                            val alarmTime = viewModel.getCurrentTime()
-
-                            timePickerAlarm.hour = alarmTime.first
-                            timePickerAlarm.minute = alarmTime.second
+                        is AlarmStates.Initial -> {
+                            viewModel.getAlarm(
+                                if (screenMode == ADD_MODE) {
+                                    
+                                }
+                            )
                         }
 
                         AlarmStates.Loading -> {

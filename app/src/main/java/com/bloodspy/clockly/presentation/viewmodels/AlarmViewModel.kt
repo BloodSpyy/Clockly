@@ -4,12 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bloodspy.clockly.domain.entities.AlarmEntity
 import com.bloodspy.clockly.domain.usecases.AddAlarmUseCase
-import com.bloodspy.clockly.domain.usecases.EditAlarmUseCase
 import com.bloodspy.clockly.domain.usecases.GetAlarmUseCase
 import com.bloodspy.clockly.domain.usecases.ScheduleAlarmUseCase
 import com.bloodspy.clockly.presentation.states.AlarmStates
-import com.bloodspy.clockly.utils.getMillisFromAlarmTime
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -21,7 +18,7 @@ class AlarmViewModel @Inject constructor(
     private val addAlarmUseCase: AddAlarmUseCase,
     private val scheduleAlarmUseCase: ScheduleAlarmUseCase
 ): ViewModel() {
-    private val _state = MutableStateFlow<AlarmStates>(AlarmStates.Initial)
+    private val _state = MutableStateFlow<AlarmStates>()
     val state = _state.asStateFlow()
 
     fun getAlarm(alarmId: Int) {
@@ -30,7 +27,9 @@ class AlarmViewModel @Inject constructor(
         viewModelScope.launch {
             val alarm = getAlarmUseCase(alarmId)
 
-            _state.value = AlarmStates.DataLoaded(alarm)
+            val alarmTime = getAlarmTimeFromMillis(alarm.alarmTime)
+
+            _state.value = AlarmStates.DataLoaded(alarmTime.first, alarmTime.second)
         }
     }
 
@@ -49,13 +48,19 @@ class AlarmViewModel @Inject constructor(
         }
     }
 
-    fun getCurrentTime(): Pair<Int, Int> {
+
+
+    private fun getMillisFromAlarmTime(hour: Int, minute: Int): Long {
         val calendar = Calendar.getInstance()
 
-        val hour = calendar.get(Calendar.HOUR_OF_DAY)
-        val minute = calendar.get(Calendar.MINUTE)
+        calendar.set(Calendar.HOUR_OF_DAY, hour)
+        calendar.set(Calendar.MINUTE, minute)
 
-        return Pair(hour, minute)
+        return calendar.timeInMillis
+    }
+
+    private fun getAlarmTimeFromMillis(timeInMillis: Long): Pair<Int, Int> {
+
     }
 
 }
