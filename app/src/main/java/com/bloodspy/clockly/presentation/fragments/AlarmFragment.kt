@@ -1,26 +1,34 @@
 package com.bloodspy.clockly.presentation.fragments
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.provider.AlarmClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewModelScope
 import com.bloodspy.clockly.AppApplication
 import com.bloodspy.clockly.databinding.FragmentAlarmBinding
+import com.bloodspy.clockly.domain.entities.AlarmEntity
+import com.bloodspy.clockly.enums.ScreenMode
 import com.bloodspy.clockly.presentation.states.AlarmStates
 import com.bloodspy.clockly.presentation.viewmodels.AlarmViewModel
 import com.bloodspy.clockly.presentation.viewmodels.factory.ViewModelFactory
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.processNextEventInCurrentThread
 import java.util.Calendar
 import javax.inject.Inject
 
 class AlarmFragment : Fragment() {
     private lateinit var onEndWorkListener: OnEndWorkListener
+
+    private lateinit var screenMode: ScreenMode
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -34,7 +42,6 @@ class AlarmFragment : Fragment() {
         get() = _binding ?: throw RuntimeException("FragmentAlarmBinding is null")
 
     private var alarmId = UNDEFINED_ID
-    private var screenMode = UNKNOWN_SCREEN_MODE
 
     override fun onAttach(context: Context) {
         injectDependency()
@@ -70,7 +77,20 @@ class AlarmFragment : Fragment() {
 
         setup24HourView()
         subscribeViewModel()
+        setupClickListeners()
+    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        _binding = null
+    }
+
+    private fun setup24HourView() {
+        binding.timePickerAlarm.setIs24HourView(true)
+    }
+
+    private fun setupClickListeners() {
         with(binding) {
             textViewSave.setOnClickListener {
                 val hour = timePickerAlarm.hour
@@ -85,54 +105,38 @@ class AlarmFragment : Fragment() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-
-        //todo подумай, оставить здесь или перенести в onViewCreated()
-        if (screenMode == EDIT_MODE) {
-            viewModel.getAlarm(alarmId)
-        }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-        _binding = null
-    }
-
-    private fun setup24HourView() {
-        binding.timePickerAlarm.setIs24HourView(true)
-    }
-
     private fun subscribeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
-            with(binding) {
-                viewModel.state.collect {
-                    progressBarLoading.visibility = View.GONE
-                    textViewSave.isEnabled = true
-                    textViewCancel.isEnabled = true
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                with(binding) {
+                    viewModel.state.collect {
+                        progressBarLoading.visibility = View.GONE
+                        textViewSave.isEnabled = true
+                        timePickerAlarm.isEnabled = true
 
-                    when (it) {
-                        is AlarmStates.DataLoaded -> {
-                            timePickerAlarm.hour = it.hour
-                            timePickerAlarm.minute = it.minute
+                        when (it) {
+                            is AlarmStates.Initial -> {
+                                viewModel.getAlarm(
+                                    when (screenMode) {
+                                        ScreenMode.ADD_MODE -> AlarmEntity.UNDEFINED_ID
+                                        ScreenMode.EDIT_MODE -> alarmId
+                                    }
+                                )
+                            }
+
+                            is AlarmStates.DataLoaded -> {
+                                timePickerAlarm.hour = it.hour
+                                timePickerAlarm.minute = it.minute
+                            }
+
+                            AlarmStates.Loading -> {
+                                progressBarLoading.visibility = View.VISIBLE
+                                textViewSave.isEnabled = false
+                                timePickerAlarm.isEnabled = false
+                            }
+
+                            AlarmStates.Success -> onEndWorkListener.onEndWork()
                         }
-
-                        is AlarmStates.Initial -> {
-                            viewModel.getAlarm(
-                                if (screenMode == ADD_MODE) {
-                                    
-                                }
-                            )
-                        }
-
-                        AlarmStates.Loading -> {
-                            progressBarLoading.visibility = View.VISIBLE
-                            textViewSave.isEnabled = false
-                            textViewCancel.isEnabled = false
-                        }
-
-                        AlarmStates.Success -> onEndWorkListener.onEndWork()
                     }
                 }
             }
@@ -150,15 +154,19 @@ class AlarmFragment : Fragment() {
                 throw RuntimeException("Param screen mode not found")
             }
 
-            val mode = getString(SCREEN_MODE).toString()
+            val mode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                getParcelable(SCREEN_MODE, ScreenMode::class.java)
+            } else {
+                getParcelable(SCREEN_MODE)
+            }
 
-            if (mode != ADD_MODE && mode != EDIT_MODE) {
+            if (mode != ScreenMode.ADD_MODE && mode != ScreenMode.EDIT_MODE) {
                 throw RuntimeException("Unknown screen mode: $mode")
             }
 
             screenMode = mode
 
-            if (screenMode == EDIT_MODE) {
+            if (screenMode == ScreenMode.EDIT_MODE) {
                 if (!containsKey(ALARM_ID)) {
                     throw RuntimeException("Param alarm id not found")
                 }
@@ -168,7 +176,7 @@ class AlarmFragment : Fragment() {
         }
     }
 
-    fun checkImplementListener(context: Context) {
+    private fun checkImplementListener(context: Context) {
         if (context is OnEndWorkListener) {
             onEndWorkListener = context
         } else {
@@ -186,22 +194,18 @@ class AlarmFragment : Fragment() {
         private const val SCREEN_MODE = "screen_mode"
         private const val ALARM_ID = "alarm_id"
 
-        private const val ADD_MODE = "add_mode"
-        private const val EDIT_MODE = "edit_mode"
-
         private const val UNDEFINED_ID = 0
-        private const val UNKNOWN_SCREEN_MODE = "unknown"
 
         fun newInstanceAddMode(): AlarmFragment = AlarmFragment().apply {
             arguments = Bundle().apply {
-                putString(SCREEN_MODE, ADD_MODE)
+                putParcelable(SCREEN_MODE, ScreenMode.ADD_MODE)
             }
         }
 
         fun newInstanceEditMode(alarmId: Int): AlarmFragment {
             return AlarmFragment().apply {
                 arguments = Bundle().apply {
-                    putString(SCREEN_MODE, EDIT_MODE)
+                    putParcelable(SCREEN_MODE, ScreenMode.EDIT_MODE)
                     putInt(ALARM_ID, alarmId)
                 }
             }

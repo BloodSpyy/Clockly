@@ -6,21 +6,35 @@ import com.bloodspy.clockly.domain.entities.AlarmEntity
 import com.bloodspy.clockly.domain.usecases.DeleteAlarmUseCase
 import com.bloodspy.clockly.domain.usecases.EditAlarmUseCase
 import com.bloodspy.clockly.domain.usecases.GetAlarmsUseCase
-import kotlinx.coroutines.flow.map
+import com.bloodspy.clockly.presentation.states.AlarmsStates
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AlarmsViewModel @Inject constructor(
-    getAlarmsUseCase: GetAlarmsUseCase,
+    private val getAlarmsUseCase: GetAlarmsUseCase,
     private val deleteAlarmUseCase: DeleteAlarmUseCase,
     private val editAlarmUseCase: EditAlarmUseCase,
 //    private val cancelAlarmUseCase: CancelAlarmUseCase,
 //    private val scheduleAlarmUseCase: ScheduleAlarmUseCase
 ) : ViewModel() {
+    private val _state = MutableStateFlow<AlarmsStates>(AlarmsStates.Initial)
+    val state = _state.asStateFlow()
 
-    val alarms = getAlarmsUseCase
+    fun getAlarms() {
+        _state.value = AlarmsStates.Loading
+
+        viewModelScope.launch {
+            getAlarmsUseCase().collect {
+                _state.value = AlarmsStates.DataLoaded(it)
+            }
+        }
+    }
 
     fun changeEnableState(alarmEntity: AlarmEntity) {
+        _state.value = AlarmsStates.Loading
+
         val isActive = alarmEntity.isActive
 
 //        if(isActive) {
@@ -37,6 +51,7 @@ class AlarmsViewModel @Inject constructor(
     }
 
     fun deleteAlarm(alarmEntity: AlarmEntity) {
+        _state.value = AlarmsStates.Loading
 //        cancelAlarmUseCase()
 
         viewModelScope.launch {

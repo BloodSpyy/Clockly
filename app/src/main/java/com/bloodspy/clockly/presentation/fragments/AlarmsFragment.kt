@@ -16,6 +16,7 @@ import com.bloodspy.clockly.AppApplication
 import com.bloodspy.clockly.databinding.FragmentAlarmsBinding
 import com.bloodspy.clockly.domain.entities.AlarmEntity
 import com.bloodspy.clockly.presentation.recyclerViewUtils.adapter.AlarmsAdapter
+import com.bloodspy.clockly.presentation.states.AlarmsStates
 import com.bloodspy.clockly.presentation.viewmodels.AlarmsViewModel
 import com.bloodspy.clockly.presentation.viewmodels.factory.ViewModelFactory
 import kotlinx.coroutines.launch
@@ -63,7 +64,7 @@ class AlarmsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        observeViewModel()
+        subscribeViewModel()
         setupRecyclerView()
         setupAdapterListeners()
         setupOnClickListeners()
@@ -75,15 +76,21 @@ class AlarmsFragment : Fragment() {
         _binding = null
     }
 
-    private fun observeViewModel() {
-        observeAlarms()
-    }
-
-    private fun observeAlarms() {
+    private fun subscribeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.alarms().collect {
-                    alarmsAdapter.submitList(it)
+                with(binding) {
+                    viewModel.state.collect {
+                        progressBarLoading.visibility = View.GONE
+
+                        when (it) {
+                            AlarmsStates.Initial -> viewModel.getAlarms()
+                            is AlarmsStates.DataLoaded -> alarmsAdapter.submitList(it.alarms)
+                            AlarmsStates.Loading -> {
+                                progressBarLoading.visibility = View.VISIBLE
+                            }
+                        }
+                    }
                 }
             }
         }

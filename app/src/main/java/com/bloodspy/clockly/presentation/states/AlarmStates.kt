@@ -1,7 +1,5 @@
 package com.bloodspy.clockly.presentation.states
 
-import com.bloodspy.clockly.domain.entities.AlarmEntity
-
 sealed class AlarmStates {
     data object Initial: AlarmStates()
 
