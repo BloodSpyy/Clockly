@@ -17,6 +17,7 @@ import com.bloodspy.clockly.databinding.ActivityClocklyBinding
 import com.bloodspy.clockly.domain.entities.AlarmEntity
 import com.bloodspy.clockly.presentation.fragments.AlarmFragment
 import com.bloodspy.clockly.presentation.fragments.AlarmsFragment
+import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 
 class ClocklyActivity : AppCompatActivity(),
@@ -109,8 +110,9 @@ class ClocklyActivity : AppCompatActivity(),
             this,
             binding.root,
             getString(R.string.snackbar_message),
-            Snackbar.LENGTH_LONG
+            Snackbar.LENGTH_INDEFINITE
         )
+            .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE)
             .setAction(getString(R.string.snackbar_action)) {
                 openSettingsForEnableNotificationsLauncher.launch(
                     getIntentToAppSettings()
