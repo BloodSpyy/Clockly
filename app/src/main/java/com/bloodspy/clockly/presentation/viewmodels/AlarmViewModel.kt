@@ -27,7 +27,6 @@ class AlarmViewModel @Inject constructor(
         _state.value = AlarmStates.Loading
 
         if (alarmId == AlarmEntity.UNDEFINED_ID) {
-            Log.d("AlarmViewModel", "it")
             getHourAndMinuteFromAlarmTime(NO_SET_TIME).apply {
                 _state.value = AlarmStates.DataLoaded(this.first, this.second)
             }
@@ -49,7 +48,6 @@ class AlarmViewModel @Inject constructor(
         )
 
         viewModelScope.launch {
-            delay(5000)
             addAlarmUseCase(alarm)
 
             _state.value = AlarmStates.Success

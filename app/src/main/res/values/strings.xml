@@ -9,4 +9,6 @@
     <string name="minutes_hint">Минуты</string>
     <string name="cancel_button">Отменить</string>
     <string name="save_button">Сохранить</string>
+    <string name="snackbar_message">Разрешите отправку уведомлений для корректной работы приложения</string>
+    <string name="snackbar_action">Настройки</string>
 </resources>
