@@ -33,7 +33,9 @@ class AlarmReceiver : BroadcastReceiver() {
                 CHANNEL_ID,
                 CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_HIGH
-            )
+            ).apply {
+                description = CHANNEL_DESCRIPTION
+            }
 
             notificationManager.createNotificationChannel(notificationChannel)
         }
@@ -77,6 +79,7 @@ class AlarmReceiver : BroadcastReceiver() {
     companion object {
         private const val CHANNEL_ID = "100"
         private const val CHANNEL_NAME = "alarm"
+        private const val CHANNEL_DESCRIPTION = "Alarm"
 
         private const val EXTRA_TIME_IN_MILLIS = "time"
 
