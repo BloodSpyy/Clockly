@@ -1,6 +1,7 @@
 package com.bloodspy.clockly.presentation.activity
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -129,5 +130,8 @@ class ClocklyActivity : AppCompatActivity(),
 
     companion object {
         private const val NOTIFICATION_ALLOW_BY_DEFAULT = true
+
+        fun newIntent(context: Context) = Intent(context, ClocklyActivity::class.java)
+
     }
 }

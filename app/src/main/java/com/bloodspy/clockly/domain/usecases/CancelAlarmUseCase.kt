@@ -1,11 +1,13 @@
 package com.bloodspy.clockly.domain.usecases
 
-import com.bloodspy.clockly.domain.scheduler.AlarmScheduler
+import com.bloodspy.clockly.domain.repositories.AlarmSchedulerRepository
 import javax.inject.Inject
 
 
-class CancelAlarmUseCase @Inject constructor(private val alarmScheduler: AlarmScheduler) {
-    operator fun invoke() {
-        alarmScheduler.cancelAlarm()
+class CancelAlarmUseCase @Inject constructor(
+    private val alarmSchedulerRepository: AlarmSchedulerRepository,
+) {
+    suspend operator fun invoke(alarmId: Int) {
+        alarmSchedulerRepository.cancelAlarm(alarmId)
     }
 }

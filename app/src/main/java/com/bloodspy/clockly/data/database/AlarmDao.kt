@@ -16,7 +16,7 @@ interface AlarmDao {
     suspend fun getAlarm(alarmId: Int): AlarmModel
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addAlarm(alarm: AlarmModel)
+    suspend fun addAlarm(alarm: AlarmModel): Long
 
     @Query("DELETE FROM alarms WHERE id = :alarmId")
     suspend fun deleteAlarm(alarmId: Int)

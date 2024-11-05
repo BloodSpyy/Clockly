@@ -11,4 +11,6 @@
     <string name="save_button">Сохранить</string>
     <string name="snackbar_message">Разрешите отправку уведомлений для корректной работы приложения</string>
     <string name="snackbar_action">Настройки</string>
+    <string name="alarm_notification_button">Остановить</string>
+    <string name="alarm_notification_channel_name">Будильник</string>
 </resources>

@@ -2,7 +2,6 @@ package com.bloodspy.clockly.presentation.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,10 +15,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bloodspy.clockly.AppApplication
 import com.bloodspy.clockly.databinding.FragmentAlarmsBinding
 import com.bloodspy.clockly.domain.entities.AlarmEntity
+import com.bloodspy.clockly.factories.ViewModelFactory
 import com.bloodspy.clockly.presentation.recyclerViewUtils.adapter.AlarmsAdapter
 import com.bloodspy.clockly.presentation.states.AlarmsStates
 import com.bloodspy.clockly.presentation.viewmodels.AlarmsViewModel
-import com.bloodspy.clockly.presentation.viewmodels.factory.ViewModelFactory
+import dagger.android.AndroidInjection
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -121,11 +121,6 @@ class AlarmsFragment : Fragment() {
         }
     }
 
-    private fun injectDependency() {
-        (requireActivity().application as AppApplication).component
-            .inject(this)
-    }
-
     private fun setupRecyclerView() {
         binding.recyclerViewAlarms.adapter = alarmsAdapter
     }
@@ -178,6 +173,11 @@ class AlarmsFragment : Fragment() {
                 "Activity must implement OnAddButtonClickListener and OnAlarmClickListener"
             )
         }
+    }
+
+    private fun injectDependency() {
+        (requireActivity().application as AppApplication).component
+            .inject(this)
     }
 
     interface OnAddButtonClickListener {

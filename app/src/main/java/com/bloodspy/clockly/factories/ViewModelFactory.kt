@@ -1,4 +1,4 @@
-package com.bloodspy.clockly.presentation.viewmodels.factory
+package com.bloodspy.clockly.factories
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

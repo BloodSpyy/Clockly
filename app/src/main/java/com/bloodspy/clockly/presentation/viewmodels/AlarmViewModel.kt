@@ -1,14 +1,13 @@
 package com.bloodspy.clockly.presentation.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bloodspy.clockly.domain.entities.AlarmEntity
 import com.bloodspy.clockly.domain.usecases.AddAlarmUseCase
+import com.bloodspy.clockly.domain.usecases.EditAlarmUseCase
 import com.bloodspy.clockly.domain.usecases.GetAlarmUseCase
 import com.bloodspy.clockly.domain.usecases.ScheduleAlarmUseCase
 import com.bloodspy.clockly.presentation.states.AlarmStates
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -18,6 +17,7 @@ import javax.inject.Inject
 class AlarmViewModel @Inject constructor(
     private val getAlarmUseCase: GetAlarmUseCase,
     private val addAlarmUseCase: AddAlarmUseCase,
+    private val editAlarmUseCase: EditAlarmUseCase,
     private val scheduleAlarmUseCase: ScheduleAlarmUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow<AlarmStates>(AlarmStates.Initial)
@@ -39,7 +39,6 @@ class AlarmViewModel @Inject constructor(
         }
     }
 
-    //todo разберись, нужны ли в проекте add и edit методы одновременно
     fun addAlarm(hour: Int, minute: Int) {
         _state.value = AlarmStates.Loading
 
@@ -48,7 +47,26 @@ class AlarmViewModel @Inject constructor(
         )
 
         viewModelScope.launch {
-            addAlarmUseCase(alarm)
+            val alarmId = addAlarmUseCase(alarm).toInt()
+
+            scheduleAlarmUseCase(alarmId, alarm.alarmTime)
+
+            _state.value = AlarmStates.Success
+        }
+    }
+
+    fun editAlarm(alarmId: Int, hour: Int, minute: Int) {
+        _state.value = AlarmStates.Loading
+
+        val alarm = AlarmEntity(
+            id = alarmId,
+            alarmTime = getMillisFromAlarmTime(hour, minute)
+        )
+
+        viewModelScope.launch {
+            editAlarmUseCase(alarm)
+
+            scheduleAlarmUseCase(alarmId, alarm.alarmTime)
 
             _state.value = AlarmStates.Success
         }

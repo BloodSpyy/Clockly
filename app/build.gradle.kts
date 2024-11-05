@@ -51,9 +51,10 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation (libs.dagger.android)
-    annotationProcessor (libs.dagger.android.processor)
-    ksp (libs.dagger.compiler)
+    implementation(libs.dagger.android)
+    annotationProcessor(libs.dagger.android.processor)
+    ksp(libs.dagger.compiler)
+    ksp (libs.dagger.android.processor)
 
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)
@@ -61,4 +62,6 @@ dependencies {
     implementation(libs.androidx.room.ktx)
 
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
+    implementation (libs.androidx.work.runtime.ktx)
 }

@@ -3,7 +3,6 @@ package com.bloodspy.clockly.presentation.fragments
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.provider.AlarmClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,17 +11,15 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.viewModelScope
 import com.bloodspy.clockly.AppApplication
 import com.bloodspy.clockly.databinding.FragmentAlarmBinding
 import com.bloodspy.clockly.domain.entities.AlarmEntity
 import com.bloodspy.clockly.enums.ScreenMode
+import com.bloodspy.clockly.factories.ViewModelFactory
 import com.bloodspy.clockly.presentation.states.AlarmStates
 import com.bloodspy.clockly.presentation.viewmodels.AlarmViewModel
-import com.bloodspy.clockly.presentation.viewmodels.factory.ViewModelFactory
+import dagger.android.AndroidInjection
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.processNextEventInCurrentThread
-import java.util.Calendar
 import javax.inject.Inject
 
 class AlarmFragment : Fragment() {
@@ -96,7 +93,10 @@ class AlarmFragment : Fragment() {
                 val hour = timePickerAlarm.hour
                 val minute = timePickerAlarm.minute
 
-                viewModel.addAlarm(hour, minute)
+                when (screenMode) {
+                    ScreenMode.ADD_MODE -> viewModel.addAlarm(hour, minute)
+                    ScreenMode.EDIT_MODE -> viewModel.editAlarm(alarmId, hour, minute)
+                }
             }
 
             textViewCancel.setOnClickListener {
@@ -143,11 +143,6 @@ class AlarmFragment : Fragment() {
         }
     }
 
-    private fun injectDependency() {
-        (requireActivity().application as AppApplication).component
-            .inject(this)
-    }
-
     private fun parseParams() {
         with(requireArguments()) {
             if (!containsKey(SCREEN_MODE)) {
@@ -182,6 +177,11 @@ class AlarmFragment : Fragment() {
         } else {
             throw RuntimeException("Activity must implement OnEndWorkListener")
         }
+    }
+
+    private fun injectDependency() {
+        (requireActivity().application as AppApplication).component
+            .inject(this)
     }
 
     interface OnEndWorkListener {

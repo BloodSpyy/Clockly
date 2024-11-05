@@ -13,8 +13,7 @@ interface DataModule {
     companion object {
         @Provides
         @ClocklyAppScope
-        fun provideAlarmDao(application: Application): AlarmDao {
-            return ClocklyDatabase.getInstance(application).alarmDao()
-        }
+        fun provideAlarmDao(application: Application): AlarmDao =
+            ClocklyDatabase.getInstance(application).alarmDao()
     }
 }

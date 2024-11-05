@@ -1,4 +1,4 @@
-package com.bloodspy.clockly.domain.repository
+package com.bloodspy.clockly.domain.repositories
 
 import com.bloodspy.clockly.domain.entities.AlarmEntity
 import kotlinx.coroutines.flow.Flow
@@ -8,7 +8,7 @@ interface AlarmRepository {
 
     suspend fun getAlarm(alarmId: Int): AlarmEntity
 
-    suspend fun addAlarm(alarm: AlarmEntity)
+    suspend fun addAlarm(alarm: AlarmEntity): Long
 
     suspend fun editAlarm(alarm: AlarmEntity)
 

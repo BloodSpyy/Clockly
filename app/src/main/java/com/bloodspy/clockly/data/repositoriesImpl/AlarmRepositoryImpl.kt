@@ -1,9 +1,9 @@
-package com.bloodspy.clockly.data
+package com.bloodspy.clockly.data.repositoriesImpl
 
 import com.bloodspy.clockly.data.database.AlarmDao
 import com.bloodspy.clockly.data.mappers.AlarmMapper
 import com.bloodspy.clockly.domain.entities.AlarmEntity
-import com.bloodspy.clockly.domain.repository.AlarmRepository
+import com.bloodspy.clockly.domain.repositories.AlarmRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -20,8 +20,8 @@ class AlarmRepositoryImpl @Inject constructor(
         return mapper.mapModelToEntity(alarmDao.getAlarm(alarmId))
     }
 
-    override suspend fun addAlarm(alarm: AlarmEntity) {
-        alarmDao.addAlarm(mapper.mapEntityToModel(alarm))
+    override suspend fun addAlarm(alarm: AlarmEntity): Long {
+        return alarmDao.addAlarm(mapper.mapEntityToModel(alarm))
     }
 
     override suspend fun editAlarm(alarm: AlarmEntity) {
