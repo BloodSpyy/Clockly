@@ -43,7 +43,9 @@ class AlarmViewModel @Inject constructor(
         _state.value = AlarmStates.Loading
 
         val alarm = AlarmEntity(
-            alarmTime = getMillisFromAlarmTime(hour, minute)
+            alarmTime = validateAlarmTime(
+                getMillisFromAlarmTime(hour, minute)
+            )
         )
 
         viewModelScope.launch {
@@ -70,6 +72,22 @@ class AlarmViewModel @Inject constructor(
 
             _state.value = AlarmStates.Success
         }
+    }
+
+    private fun validateAlarmTime(alarmTime: Long): Long {
+        // if input time <= current time -> add 1 day
+        return if (alarmTime <= Calendar.getInstance().timeInMillis) {
+            addDayToAlarmTime(alarmTime)
+        } else {
+            alarmTime
+        }
+    }
+
+    private fun addDayToAlarmTime(alarmTime: Long): Long {
+        return Calendar.getInstance().apply {
+            timeInMillis = alarmTime
+            add(Calendar.DAY_OF_MONTH, 1)
+        }.timeInMillis
     }
 
     private fun getMillisFromAlarmTime(hour: Int, minute: Int): Long {
