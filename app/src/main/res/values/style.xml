@@ -9,8 +9,7 @@
 
     <style name="appName">
         <item name="android:text">@string/app_name</item>
-        <item name="android:textSize">25sp</item>
+        <item name="android:textSize">35sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textAlignment">center</item>
     </style>
 </resources>

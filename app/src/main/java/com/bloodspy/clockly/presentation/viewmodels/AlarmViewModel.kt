@@ -1,5 +1,6 @@
 package com.bloodspy.clockly.presentation.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bloodspy.clockly.domain.entities.AlarmEntity
@@ -8,6 +9,7 @@ import com.bloodspy.clockly.domain.usecases.EditAlarmUseCase
 import com.bloodspy.clockly.domain.usecases.GetAlarmUseCase
 import com.bloodspy.clockly.domain.usecases.ScheduleAlarmUseCase
 import com.bloodspy.clockly.presentation.states.AlarmStates
+import com.bloodspy.clockly.utils.parseTime
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -95,6 +97,9 @@ class AlarmViewModel @Inject constructor(
 
         calendar.set(Calendar.HOUR_OF_DAY, hour)
         calendar.set(Calendar.MINUTE, minute)
+
+        calendar.clear(Calendar.SECOND)
+        calendar.clear(Calendar.MILLISECOND)
 
         return calendar.timeInMillis
     }

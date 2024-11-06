@@ -13,4 +13,5 @@
     <string name="snackbar_action">Настройки</string>
     <string name="alarm_notification_button">Остановить</string>
     <string name="alarm_notification_channel_name">Будильник</string>
+    <string name="nearest_alarm">Ближайший будильник через %s</string>
 </resources>
