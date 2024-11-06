@@ -8,6 +8,8 @@ interface AlarmRepository {
 
     suspend fun getAlarm(alarmId: Int): AlarmEntity
 
+    suspend fun getNearestAlarmTime(): Long
+
     suspend fun addAlarm(alarm: AlarmEntity): Long
 
     suspend fun editAlarm(alarm: AlarmEntity)
