@@ -13,14 +13,15 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bloodspy.clockly.AppApplication
+import com.bloodspy.clockly.R
 import com.bloodspy.clockly.databinding.FragmentAlarmsBinding
 import com.bloodspy.clockly.domain.entities.AlarmEntity
 import com.bloodspy.clockly.factories.ViewModelFactory
 import com.bloodspy.clockly.presentation.recyclerViewUtils.adapter.AlarmsAdapter
 import com.bloodspy.clockly.presentation.states.AlarmsStates
 import com.bloodspy.clockly.presentation.viewmodels.AlarmsViewModel
-import dagger.android.AndroidInjection
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 class AlarmsFragment : Fragment() {
@@ -82,13 +83,33 @@ class AlarmsFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 with(binding) {
                     viewModel.state.collect {
-                        progressBarLoading.visibility = View.GONE
-
                         when (it) {
-                            AlarmsStates.Initial -> viewModel.getAlarms()
-                            is AlarmsStates.DataLoaded -> alarmsAdapter.submitList(it.alarms)
+                            AlarmsStates.Initial -> {
+                                viewModel.loadData()
+                            }
+
                             AlarmsStates.Loading -> {
                                 progressBarLoading.visibility = View.VISIBLE
+                            }
+
+                            AlarmsStates.Success -> {
+                                progressBarLoading.visibility = View.GONE
+                            }
+
+                            is AlarmsStates.AlarmsLoaded -> alarmsAdapter.submitList(it.alarms)
+                            is AlarmsStates.NearestAlarmLoaded -> {
+                                with(it.nearestAlarm) {
+                                    if (this == null) {
+                                        textViewNearestAlarm.visibility = View.GONE
+                                    } else {
+                                        textViewNearestAlarm.visibility = View.VISIBLE
+                                        textViewNearestAlarm.text = String.format(
+                                            Locale.getDefault(),
+                                            getString(R.string.nearest_alarm),
+                                            this
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
