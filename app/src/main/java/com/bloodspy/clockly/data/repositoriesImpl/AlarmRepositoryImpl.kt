@@ -20,7 +20,7 @@ class AlarmRepositoryImpl @Inject constructor(
         return mapper.mapModelToEntity(alarmDao.getAlarm(alarmId))
     }
 
-    override suspend fun getNearestAlarmTime(): Long? {
+    override suspend fun getNearestAlarmTime(): Flow<Long?> {
         return alarmDao.getNearestAlarmTime()
     }
 
