@@ -18,7 +18,7 @@ interface AlarmDao {
     suspend fun getAlarm(alarmId: Int): AlarmModel
 
     @Query("SELECT MIN(alarmTime) FROM alarms")
-    suspend fun getNearestAlarmTime(): Flow<Long?>
+    fun getNearestAlarmTime(): Flow<Long?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addAlarm(alarm: AlarmModel): Long
