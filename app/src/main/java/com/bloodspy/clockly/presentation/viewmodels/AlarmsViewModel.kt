@@ -10,11 +10,8 @@ import com.bloodspy.clockly.domain.usecases.DeleteAlarmUseCase
 import com.bloodspy.clockly.domain.usecases.GetAlarmsUseCase
 import com.bloodspy.clockly.domain.usecases.GetNearestAlarmTime
 import com.bloodspy.clockly.domain.usecases.ScheduleAlarmUseCase
-import com.bloodspy.clockly.presentation.states.AlarmStates
 import com.bloodspy.clockly.presentation.states.AlarmsStates
 import com.bloodspy.clockly.utils.parseTime
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -32,29 +29,26 @@ class AlarmsViewModel @Inject constructor(
     val state = _state.asStateFlow()
 
     suspend fun loadData() {
-        _state.value = AlarmsStates.Loading
 
         viewModelScope.launch {
 
-            val alarmsJob = launch {
+            launch {
                 getAlarmsUseCase().collect {
+                    _state.value = AlarmsStates.Loading
                     Log.d("AlarmsViewModel", "in coroutine 1")
                     _state.value = AlarmsStates.AlarmsLoaded(it)
                 }
             }
 
-            val nearestAlarmJob = launch {
-                _state.value = AlarmsStates.NearestAlarmLoaded(
-                    getNearestAlarmTime()?.let {
-                        Log.d("AlarmsViewModel", "in coroutine 2")
-                        parseTime(it)
-                    }
-                )
+            launch {
+                getNearestAlarmTime().collect {
+                    _state.value = AlarmsStates.Loading
+                    Log.d("AlarmsViewModel", "in coroutine 2")
+                    _state.value = AlarmsStates.NearestAlarmLoaded(
+                        parseAlarmTime(it)
+                    )
+                }
             }
-
-            alarmsJob.join()
-            nearestAlarmJob.join()
-
 
             Log.d("AlarmsViewModel", "out coroutine")
         }
@@ -90,6 +84,12 @@ class AlarmsViewModel @Inject constructor(
             }
 
             _state.value = AlarmsStates.Success
+        }
+    }
+
+    private fun parseAlarmTime(timeInMillis: Long?): String? {
+        return timeInMillis?.let {
+            parseTime(it)
         }
     }
 }

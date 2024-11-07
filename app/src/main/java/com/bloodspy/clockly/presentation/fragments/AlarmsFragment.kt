@@ -83,6 +83,8 @@ class AlarmsFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 with(binding) {
                     viewModel.state.collect {
+                        progressBarLoading.visibility = View.GONE
+
                         when (it) {
                             AlarmsStates.Initial -> {
                                 viewModel.loadData()
@@ -90,10 +92,6 @@ class AlarmsFragment : Fragment() {
 
                             AlarmsStates.Loading -> {
                                 progressBarLoading.visibility = View.VISIBLE
-                            }
-
-                            AlarmsStates.Success -> {
-                                progressBarLoading.visibility = View.GONE
                             }
 
                             is AlarmsStates.AlarmsLoaded -> alarmsAdapter.submitList(it.alarms)

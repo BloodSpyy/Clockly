@@ -7,8 +7,6 @@ sealed class AlarmsStates {
 
     data object Loading : AlarmsStates()
 
-    data object Success: AlarmsStates()
-
     class NearestAlarmLoaded(val nearestAlarm: String?) : AlarmsStates()
 
     class AlarmsLoaded(val alarms: List<AlarmEntity>) : AlarmsStates()
