@@ -6,20 +6,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bloodspy.clockly.AppApplication
+import com.bloodspy.clockly.R
 import com.bloodspy.clockly.databinding.FragmentAlarmBinding
 import com.bloodspy.clockly.domain.entities.AlarmEntity
 import com.bloodspy.clockly.enums.ScreenMode
 import com.bloodspy.clockly.factories.ViewModelFactory
+import com.bloodspy.clockly.helpers.AlarmTimeHelper
 import com.bloodspy.clockly.presentation.states.AlarmStates
 import com.bloodspy.clockly.presentation.viewmodels.AlarmViewModel
-import dagger.android.AndroidInjection
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 class AlarmFragment : Fragment() {
@@ -38,7 +41,7 @@ class AlarmFragment : Fragment() {
     private val binding: FragmentAlarmBinding
         get() = _binding ?: throw RuntimeException("FragmentAlarmBinding is null")
 
-    private var alarmId = UNDEFINED_ID
+    private var alarmId = AlarmEntity.UNDEFINED_ID
 
     override fun onAttach(context: Context) {
         injectDependency()
@@ -116,17 +119,7 @@ class AlarmFragment : Fragment() {
 
                         when (it) {
                             is AlarmStates.Initial -> {
-                                viewModel.getAlarm(
-                                    when (screenMode) {
-                                        ScreenMode.ADD_MODE -> AlarmEntity.UNDEFINED_ID
-                                        ScreenMode.EDIT_MODE -> alarmId
-                                    }
-                                )
-                            }
-
-                            is AlarmStates.DataLoaded -> {
-                                timePickerAlarm.hour = it.hour
-                                timePickerAlarm.minute = it.minute
+                                viewModel.getAlarm(alarmId)
                             }
 
                             AlarmStates.Loading -> {
@@ -135,12 +128,39 @@ class AlarmFragment : Fragment() {
                                 timePickerAlarm.isEnabled = false
                             }
 
-                            AlarmStates.Success -> onEndWorkListener.onEndWork()
+                            is AlarmStates.DataLoaded -> {
+                                timePickerAlarm.hour = it.hour
+                                timePickerAlarm.minute = it.minute
+                            }
+
+                            is AlarmStates.Success -> {
+                                showSuccessToast(it.timeToAlarm)
+                                onEndWorkListener.onEndWork()
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun showSuccessToast(timeToAlarm: Array<Int>) {
+        Toast.makeText(
+            requireContext(),
+            String.format(
+                Locale.getDefault(),
+                getString(R.string.time_to_alarm),
+                AlarmTimeHelper.getFormattedTimeToStartAlarm(
+                    arrayOf(
+                        resources.getStringArray(R.array.day_declination),
+                        resources.getStringArray(R.array.hour_declination),
+                        resources.getStringArray(R.array.minute_declination)
+                    ),
+                    timeToAlarm
+                )
+            ),
+            Toast.LENGTH_LONG
+        ).show()
     }
 
     private fun parseParams() {
@@ -166,7 +186,7 @@ class AlarmFragment : Fragment() {
                     throw RuntimeException("Param alarm id not found")
                 }
 
-                alarmId = getInt(ALARM_ID)
+                alarmId = getInt(ALARM_ID, AlarmEntity.UNDEFINED_ID)
             }
         }
     }
@@ -193,8 +213,6 @@ class AlarmFragment : Fragment() {
 
         private const val SCREEN_MODE = "screen_mode"
         private const val ALARM_ID = "alarm_id"
-
-        private const val UNDEFINED_ID = 0
 
         fun newInstanceAddMode(): AlarmFragment = AlarmFragment().apply {
             arguments = Bundle().apply {

@@ -7,7 +7,7 @@ import javax.inject.Inject
 class CancelAlarmUseCase @Inject constructor(
     private val alarmSchedulerRepository: AlarmSchedulerRepository,
 ) {
-    suspend operator fun invoke(alarmId: Int) {
-        alarmSchedulerRepository.cancelAlarm(alarmId)
+    operator fun invoke(alarmId: Int) {
+        alarmSchedulerRepository.cancel(alarmId)
     }
 }

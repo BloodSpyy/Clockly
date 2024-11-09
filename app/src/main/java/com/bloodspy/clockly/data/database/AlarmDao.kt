@@ -9,16 +9,11 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AlarmDao {
-    //todo сделай здесь возможность null
     @Query("SELECT * FROM alarms ORDER BY alarmTime")
     fun getAlarms(): Flow<List<AlarmModel>>
 
-    //todo сделай здесь возможность null
     @Query("SELECT * FROM alarms WHERE id = :alarmId")
-    suspend fun getAlarm(alarmId: Int): AlarmModel
-
-    @Query("SELECT MIN(alarmTime) FROM alarms")
-    fun getNearestAlarmTime(): Flow<Long?>
+    suspend fun getAlarm(alarmId: Int): AlarmModel?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addAlarm(alarm: AlarmModel): Long

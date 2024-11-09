@@ -26,6 +26,7 @@ class ClocklyActivity : AppCompatActivity(),
     AlarmsFragment.OnAddButtonClickListener,
     AlarmsFragment.OnAlarmClickListener,
     AlarmFragment.OnEndWorkListener {
+
     private val binding by lazy {
         ActivityClocklyBinding.inflate(layoutInflater)
     }
@@ -40,8 +41,10 @@ class ClocklyActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
         setContentView(binding.root)
+
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -132,8 +135,5 @@ class ClocklyActivity : AppCompatActivity(),
 
     companion object {
         private const val NOTIFICATION_ALLOW_BY_DEFAULT = true
-
-        fun newIntent(context: Context) = Intent(context, ClocklyActivity::class.java)
-
     }
 }

@@ -10,18 +10,16 @@ import javax.inject.Inject
 
 class AlarmRepositoryImpl @Inject constructor(
     private val alarmDao: AlarmDao,
-    private val mapper: AlarmMapper
-): AlarmRepository {
+    private val mapper: AlarmMapper,
+) : AlarmRepository {
     override fun getAlarms(): Flow<List<AlarmEntity>> {
         return alarmDao.getAlarms().map { mapper.mapListModelsToListEntities(it) }
     }
 
-    override suspend fun getAlarm(alarmId: Int): AlarmEntity {
-        return mapper.mapModelToEntity(alarmDao.getAlarm(alarmId))
-    }
-
-    override suspend fun getNearestAlarmTime(): Flow<Long?> {
-        return alarmDao.getNearestAlarmTime()
+    override suspend fun getAlarm(alarmId: Int): AlarmEntity? {
+        return alarmDao.getAlarm(alarmId)?.let {
+            mapper.mapModelToEntity(it)
+        }
     }
 
     override suspend fun addAlarm(alarm: AlarmEntity): Long {

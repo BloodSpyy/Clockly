@@ -1,15 +1,19 @@
 package com.bloodspy.clockly.services
 
+import android.app.Notification
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.os.Binder
+import android.icu.util.Calendar
 import android.os.IBinder
+import androidx.core.app.NotificationCompat
 import com.bloodspy.clockly.AppApplication
+import com.bloodspy.clockly.R
 import com.bloodspy.clockly.domain.entities.AlarmEntity
 import com.bloodspy.clockly.domain.repositories.AlarmRepository
-import com.bloodspy.clockly.helpers.AlarmNotificationHelper.ALARM_NOTIFICATION_ID
-import com.bloodspy.clockly.helpers.AlarmNotificationHelper.createAlarmNotification
+import com.bloodspy.clockly.helpers.AlarmServiceHelper
+import com.bloodspy.clockly.helpers.AlarmTimeHelper
+import com.bloodspy.clockly.helpers.NotificationChannelsHelper.ALARM_NOTIFICATION_CHANNEL_ID
 import com.bloodspy.clockly.helpers.RingtoneMediaPlayerHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +36,7 @@ class AlarmService : Service() {
 
     private var alarmId = AlarmEntity.UNDEFINED_ID
 
-    override fun onBind(p0: Intent?): IBinder = AlarmBinder()
+    override fun onBind(p0: Intent?): IBinder? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -69,7 +73,7 @@ class AlarmService : Service() {
     private fun startAlarm() {
         startForeground(
             ALARM_NOTIFICATION_ID,
-            createAlarmNotification(this, alarmId)
+            createNotification()
         )
 
         ringtoneMediaPlayer.start()
@@ -79,17 +83,48 @@ class AlarmService : Service() {
 
     private fun stopAlarm() {
         ringtoneMediaPlayer.stop()
+
         scope.cancel()
     }
 
     private fun setInactiveAlarmStatus() {
         scope.launch {
-            with(alarmRepository) {
-                editAlarm(
-                    getAlarm(alarmId).copy(isActive = false)
-                )
+            val alarm = alarmRepository.getAlarm(alarmId)
+
+            alarm?.let {
+                alarmRepository.editAlarm(it.copy(isActive = false))
             }
         }
+    }
+
+    private fun createNotification(): Notification {
+        return NotificationCompat.Builder(
+            this,
+            ALARM_NOTIFICATION_CHANNEL_ID
+        )
+            .setSmallIcon(R.mipmap.ic_launcher_round)
+            .setContentTitle(getString(R.string.app_name))
+            .setContentText(
+                String.format(
+                    getString(R.string.alarm_notification),
+                    AlarmTimeHelper.parseAlarmTime(Calendar.getInstance().timeInMillis)
+                )
+            )
+            .addAction(
+                R.mipmap.ic_launcher_round,
+                getString(R.string.alarm_notification_button),
+                AlarmServiceHelper.getStopAlarmServicePendingIntent(
+                    this,
+                    alarmId
+                )
+            )
+            .setDeleteIntent(
+                AlarmServiceHelper.getStopAlarmServicePendingIntent(
+                    this,
+                    alarmId
+                )
+            )
+            .build()
     }
 
     private fun injectDependency() {
@@ -121,11 +156,9 @@ class AlarmService : Service() {
         alarmId = intent.getIntExtra(EXTRA_ALARM_ID, AlarmEntity.UNDEFINED_ID)
     }
 
-    inner class AlarmBinder : Binder() {
-        fun getService() = this@AlarmService
-    }
-
     companion object {
+        private const val ALARM_NOTIFICATION_ID = 1
+
         private const val EXTRA_ACTION = "action"
         private const val EXTRA_ALARM_ID = "alarm_id"
 

@@ -5,7 +5,7 @@ sealed class AlarmStates {
 
     data object Loading: AlarmStates()
 
-    data object Success: AlarmStates()
-
     class DataLoaded(val hour: Int, val minute: Int): AlarmStates()
+
+    class Success(val timeToAlarm: Array<Int>): AlarmStates()
 }

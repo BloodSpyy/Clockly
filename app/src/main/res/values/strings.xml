@@ -1,17 +1,53 @@
 <resources>
     <string name="app_name">Clockly</string>
-    <string name="add_alarm">Add alarm</string>
-    <string name="alarm_button">Alarm</string>
-    <string name="stopwatch_button">Stopwatch</string>
-    <string name="weather_button">Weather</string>
-    <string name="alarm_notification">Будильник в %s</string>
-    <string name="hours_hint">Часы</string>
-    <string name="minutes_hint">Минуты</string>
+
+    <string name="add_alarm_button">Добавить будильник</string>
+    <string name="alarm_button">Будильник</string>
+    <string name="stopwatch_button">Секундомер</string>
+    <string name="weather_button">Погода</string>
     <string name="cancel_button">Отменить</string>
     <string name="save_button">Сохранить</string>
-    <string name="snackbar_message">Разрешите отправку уведомлений для корректной работы приложения</string>
-    <string name="snackbar_action">Настройки</string>
+
+    <string name="alarm_notification">Будильник в %s</string>
     <string name="alarm_notification_button">Остановить</string>
     <string name="alarm_notification_channel_name">Будильник</string>
-    <string name="nearest_alarm">Ближайший будильник через %s</string>
+
+    <string name="hours_hint">Часы</string>
+    <string name="minutes_hint">Минуты</string>
+
+    <string name="snackbar_message">Разрешите отправку уведомлений для корректной работы приложения</string>
+    <string name="snackbar_action">Настройки</string>
+
+    <string name="empty_alarms">Нет установленных будильников</string>
+    <string name="time_to_alarm">Звонок через %s</string>
+
+    <string name="day_singular_number">день</string>
+    <string name="day_plural_number">дней</string>
+    <string name="day_other_number">дня</string>
+
+    <string name="hour_singular_number">час</string>
+    <string name="hour_plural_number">часов</string>
+    <string name="hour_other_number">часа</string>
+
+    <string name="minute_singular_number">минуту</string>
+    <string name="minute_plural_number">минут</string>
+    <string name="minute_other_number">минуты</string>
+
+    <string-array name="day_declination">
+        <item>@string/day_singular_number</item>
+        <item>@string/day_plural_number</item>
+        <item>@string/day_other_number</item>
+    </string-array>
+
+    <string-array name="hour_declination">
+        <item>@string/hour_singular_number</item>
+        <item>@string/hour_plural_number</item>
+        <item>@string/hour_other_number</item>
+    </string-array>
+
+    <string-array name="minute_declination">
+        <item>@string/minute_singular_number</item>
+        <item>@string/minute_plural_number</item>
+        <item>@string/minute_other_number</item>
+    </string-array>
 </resources>

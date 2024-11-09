@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +18,7 @@ import com.bloodspy.clockly.R
 import com.bloodspy.clockly.databinding.FragmentAlarmsBinding
 import com.bloodspy.clockly.domain.entities.AlarmEntity
 import com.bloodspy.clockly.factories.ViewModelFactory
+import com.bloodspy.clockly.helpers.AlarmTimeHelper
 import com.bloodspy.clockly.presentation.recyclerViewUtils.adapter.AlarmsAdapter
 import com.bloodspy.clockly.presentation.states.AlarmsStates
 import com.bloodspy.clockly.presentation.viewmodels.AlarmsViewModel
@@ -81,34 +83,23 @@ class AlarmsFragment : Fragment() {
     private fun subscribeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                with(binding) {
-                    viewModel.state.collect {
-                        progressBarLoading.visibility = View.GONE
+                viewModel.state.collect {
+                    when (it) {
+                        AlarmsStates.Initial -> {
+                            viewModel.loadAlarms()
+                        }
 
-                        when (it) {
-                            AlarmsStates.Initial -> {
-                                viewModel.loadData()
+                        is AlarmsStates.AlarmsLoaded -> {
+                            if (it.alarms.isNotEmpty()) {
+                                binding.textViewEmptyAlarms.visibility = View.GONE
+                                alarmsAdapter.submitList(it.alarms)
+                            } else {
+                                binding.textViewEmptyAlarms.visibility = View.VISIBLE
                             }
+                        }
 
-                            AlarmsStates.Loading -> {
-                                progressBarLoading.visibility = View.VISIBLE
-                            }
-
-                            is AlarmsStates.AlarmsLoaded -> alarmsAdapter.submitList(it.alarms)
-                            is AlarmsStates.NearestAlarmLoaded -> {
-                                with(it.nearestAlarm) {
-                                    if (this == null) {
-                                        textViewNearestAlarm.visibility = View.GONE
-                                    } else {
-                                        textViewNearestAlarm.visibility = View.VISIBLE
-                                        textViewNearestAlarm.text = String.format(
-                                            Locale.getDefault(),
-                                            getString(R.string.nearest_alarm),
-                                            this
-                                        )
-                                    }
-                                }
-                            }
+                        is AlarmsStates.EditSuccess -> {
+                            showSuccessEditToast(it.timeToAlarm)
                         }
                     }
                 }
@@ -160,6 +151,25 @@ class AlarmsFragment : Fragment() {
         alarmsAdapter.onAlarmClickListener = {
             onAlarmClickListener.onAlarmClick(it)
         }
+    }
+
+    private fun showSuccessEditToast(timeToAlarm: Array<Int>) {
+        Toast.makeText(
+            requireContext(),
+            String.format(
+                Locale.getDefault(),
+                getString(R.string.time_to_alarm),
+                AlarmTimeHelper.getFormattedTimeToStartAlarm(
+                    arrayOf(
+                        resources.getStringArray(R.array.day_declination),
+                        resources.getStringArray(R.array.hour_declination),
+                        resources.getStringArray(R.array.minute_declination)
+                    ),
+                    timeToAlarm
+                )
+            ),
+            Toast.LENGTH_LONG
+        ).show()
     }
 
     private fun setupSwipeListener() {

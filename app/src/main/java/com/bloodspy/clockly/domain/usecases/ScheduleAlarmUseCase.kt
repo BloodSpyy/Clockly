@@ -6,7 +6,7 @@ import javax.inject.Inject
 class ScheduleAlarmUseCase @Inject constructor(
     private val alarmSchedulerRepository: AlarmSchedulerRepository,
 ) {
-    suspend operator fun invoke(alarmId: Int, timeInMillis: Long) {
-        alarmSchedulerRepository.scheduleAlarm(alarmId, timeInMillis)
+    operator fun invoke(alarmId: Int, timeInMillis: Long) {
+        alarmSchedulerRepository.schedule(alarmId, timeInMillis)
     }
 }
