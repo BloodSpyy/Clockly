@@ -99,7 +99,9 @@ class AlarmsFragment : Fragment() {
                         }
 
                         is AlarmsStates.EditSuccess -> {
-                            showSuccessEditToast(it.timeToAlarm)
+                            showSuccessEditToast(
+                                getCompletedStringToStartAlarm(it.timeToAlarm)
+                            )
                         }
                     }
                 }
@@ -153,22 +155,26 @@ class AlarmsFragment : Fragment() {
         }
     }
 
-    private fun showSuccessEditToast(timeToAlarm: Array<Int>) {
+    private fun getCompletedStringToStartAlarm(timeToAlarm: Array<Int>): String {
+        return String.format(
+            Locale.getDefault(),
+            getString(R.string.time_to_alarm),
+            AlarmTimeHelper.getFormattedTimeToStartAlarm(
+                arrayOf(
+                    resources.getStringArray(R.array.day_declination),
+                    resources.getStringArray(R.array.hour_declination),
+                    resources.getStringArray(R.array.minute_declination)
+                ),
+                timeToAlarm
+            )
+        )
+    }
+
+    private fun showSuccessEditToast(timeToAlarm: String) {
         Toast.makeText(
             requireContext(),
-            String.format(
-                Locale.getDefault(),
-                getString(R.string.time_to_alarm),
-                AlarmTimeHelper.getFormattedTimeToStartAlarm(
-                    arrayOf(
-                        resources.getStringArray(R.array.day_declination),
-                        resources.getStringArray(R.array.hour_declination),
-                        resources.getStringArray(R.array.minute_declination)
-                    ),
-                    timeToAlarm
-                )
-            ),
-            Toast.LENGTH_LONG
+            timeToAlarm,
+            Toast.LENGTH_SHORT
         ).show()
     }
 

@@ -1,8 +1,10 @@
 package com.bloodspy.clockly.presentation.activity
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -44,12 +46,13 @@ class ClocklyActivity : AppCompatActivity(),
 
         enableEdgeToEdge()
         setContentView(binding.root)
-
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        disableScreenRotation()
 
         startApp(savedInstanceState)
     }
@@ -131,6 +134,11 @@ class ClocklyActivity : AppCompatActivity(),
         return Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
             data = Uri.parse("package:${applicationContext.packageName}")
         }
+    }
+
+    @SuppressLint("SourceLockedOrientationActivity")
+    private fun disableScreenRotation() {
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     }
 
     companion object {

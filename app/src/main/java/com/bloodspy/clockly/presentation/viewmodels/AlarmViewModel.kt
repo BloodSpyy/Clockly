@@ -12,6 +12,7 @@ import com.bloodspy.clockly.presentation.states.AlarmStates
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import javax.inject.Inject
 
 class AlarmViewModel @Inject constructor(
@@ -27,12 +28,29 @@ class AlarmViewModel @Inject constructor(
         _state.value = AlarmStates.Loading
 
         viewModelScope.launch {
-            val alarm = getAlarmUseCase(alarmId)
+            val alarmTime =
+                getAlarmUseCase(alarmId)?.alarmTime ?: Calendar.getInstance().timeInMillis
 
-            AlarmTimeHelper.getHourAndMinuteFromAlarmTime(alarm?.alarmTime).apply {
-                _state.value = AlarmStates.DataLoaded(this.first, this.second)
-            }
+            val (hour, minute) = AlarmTimeHelper.getHourAndMinuteFromAlarmTime(alarmTime)
+
+            _state.value = AlarmStates.AlarmTimeLoaded(hour, minute)
         }
+    }
+
+    fun getTimeToAlarm(hour: Int, minute: Int) {
+        _state.value = AlarmStates.Loading
+
+        val validatedTimeInMillis = AlarmTimeHelper.validateAlarmTime(
+            AlarmTimeHelper.getMillisFromAlarmTime(hour, minute)
+        )
+
+        _state.value = AlarmStates.TimeToAlarmLoaded(
+            AlarmTimeHelper.parseTimeToStartAlarm(
+                AlarmTimeHelper.getTimeToStartAlarm(
+                    validatedTimeInMillis
+                )
+            )
+        )
     }
 
     fun addAlarm(hour: Int, minute: Int) {

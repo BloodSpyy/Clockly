@@ -78,6 +78,7 @@ class AlarmFragment : Fragment() {
         setup24HourView()
         subscribeViewModel()
         setupClickListeners()
+        setupTimeChangedListener()
     }
 
     override fun onDestroyView() {
@@ -108,6 +109,12 @@ class AlarmFragment : Fragment() {
         }
     }
 
+    private fun setupTimeChangedListener() {
+        binding.timePickerAlarm.setOnTimeChangedListener { _, hour, minute ->
+            viewModel.getTimeToAlarm(hour, minute)
+        }
+    }
+
     private fun subscribeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -118,7 +125,7 @@ class AlarmFragment : Fragment() {
                         timePickerAlarm.isEnabled = true
 
                         when (it) {
-                            is AlarmStates.Initial -> {
+                            AlarmStates.Initial -> {
                                 viewModel.getAlarm(alarmId)
                             }
 
@@ -128,13 +135,29 @@ class AlarmFragment : Fragment() {
                                 timePickerAlarm.isEnabled = false
                             }
 
-                            is AlarmStates.DataLoaded -> {
-                                timePickerAlarm.hour = it.hour
-                                timePickerAlarm.minute = it.minute
+                            is AlarmStates.AlarmTimeLoaded -> {
+                                with(timePickerAlarm) {
+                                    hour = it.hour
+                                    minute = it.minute
+                                }
+
+                                viewModel.getTimeToAlarm(it.hour, it.minute)
+                            }
+
+                            is AlarmStates.TimeToAlarmLoaded -> {
+                                with(textViewTimeToAlarm) {
+                                    text = getCompletedStringTimeToStartAlarm(
+                                        it.timeToAlarm
+                                    )
+                                    visibility = View.VISIBLE
+                                }
                             }
 
                             is AlarmStates.Success -> {
-                                showSuccessToast(it.timeToAlarm)
+                                showSuccessToast(
+                                    getCompletedStringTimeToStartAlarm(it.timeToAlarm)
+                                )
+
                                 onEndWorkListener.onEndWork()
                             }
                         }
@@ -144,22 +167,26 @@ class AlarmFragment : Fragment() {
         }
     }
 
-    private fun showSuccessToast(timeToAlarm: Array<Int>) {
+    private fun getCompletedStringTimeToStartAlarm(timeToAlarm: Array<Int>): String {
+        return String.format(
+            Locale.getDefault(),
+            getString(R.string.time_to_alarm),
+            AlarmTimeHelper.getFormattedTimeToStartAlarm(
+                arrayOf(
+                    resources.getStringArray(R.array.day_declination),
+                    resources.getStringArray(R.array.hour_declination),
+                    resources.getStringArray(R.array.minute_declination)
+                ),
+                timeToAlarm
+            )
+        )
+    }
+
+    private fun showSuccessToast(timeToAlarm: String) {
         Toast.makeText(
             requireContext(),
-            String.format(
-                Locale.getDefault(),
-                getString(R.string.time_to_alarm),
-                AlarmTimeHelper.getFormattedTimeToStartAlarm(
-                    arrayOf(
-                        resources.getStringArray(R.array.day_declination),
-                        resources.getStringArray(R.array.hour_declination),
-                        resources.getStringArray(R.array.minute_declination)
-                    ),
-                    timeToAlarm
-                )
-            ),
-            Toast.LENGTH_LONG
+            timeToAlarm,
+            Toast.LENGTH_SHORT
         ).show()
     }
 

@@ -76,12 +76,11 @@ object AlarmTimeHelper {
         return calendar.timeInMillis
     }
 
-    fun getHourAndMinuteFromAlarmTime(timeInMillis: Long?): Pair<Int, Int> {
-        val calendar = Calendar.getInstance()
-
-        if (timeInMillis != null) {
-            calendar.timeInMillis = timeInMillis
+    fun getHourAndMinuteFromAlarmTime(timeInMillis: Long): Pair<Int, Int> {
+        val calendar = Calendar.getInstance().apply {
+            this.timeInMillis = timeInMillis
         }
+
 
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
