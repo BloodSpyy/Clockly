@@ -46,9 +46,7 @@ class AlarmViewModel @Inject constructor(
 
         _state.value = AlarmStates.TimeToAlarmLoaded(
             AlarmTimeHelper.parseTimeToStartAlarm(
-                AlarmTimeHelper.getTimeToStartAlarm(
-                    validatedTimeInMillis
-                )
+                AlarmTimeHelper.getTimeToStartAlarm(validatedTimeInMillis)
             )
         )
     }

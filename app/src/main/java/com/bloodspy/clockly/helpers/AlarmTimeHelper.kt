@@ -15,12 +15,22 @@ object AlarmTimeHelper {
         }
     }
 
+    //todo возможно придётся адаптировать под TimeHelper
     fun parseAlarmTime(timeInMillis: Long): String {
         val timeInDate = Date(timeInMillis)
 
         val simpleDataFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
         return simpleDataFormat.format(timeInDate)
+    }
+
+    //todo замени числа на константы в TimeHelper
+    fun parseTimeToStartAlarm(timeInMillis: Long): Array<Int> {
+        val days = (timeInMillis / (1000 * 60 * 60 * 24)).toInt()
+        val hours = ((timeInMillis / (1000 * 60 * 60)) % 24).toInt()
+        val minutes = ((timeInMillis / (1000 * 60)) % 60).toInt()
+
+        return arrayOf(days, hours, minutes)
     }
 
     fun getTimeToStartAlarm(timeInMillis: Long): Long {
@@ -37,14 +47,6 @@ object AlarmTimeHelper {
         }.timeInMillis
 
         return alarmTimeInMillis - currentAlarmTimeInMillis
-    }
-
-    fun parseTimeToStartAlarm(timeInMillis: Long): Array<Int> {
-        val days = (timeInMillis / (1000 * 60 * 60 * 24)).toInt()
-        val hours = ((timeInMillis / (1000 * 60 * 60)) % 24).toInt()
-        val minutes = ((timeInMillis / (1000 * 60)) % 60).toInt()
-
-        return arrayOf(days, hours, minutes)
     }
 
     fun getFormattedTimeToStartAlarm(
@@ -88,6 +90,7 @@ object AlarmTimeHelper {
         return Pair(hour, minute)
     }
 
+    //todo замени числа на константы в TimeHelper
     private fun getTimeDeclination(declination: Array<String>, time: Int): String {
         val preLastDigit = time % 100 / 10
         val lastDigit = time % 10

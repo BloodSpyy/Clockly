@@ -13,10 +13,26 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
-        app:layout_constraintBottom_toTopOf="@id/recyclerViewAlarms"
+        app:layout_constraintBottom_toTopOf="@id/textViewNearestAlarmTime"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewNearestAlarmTime"
+        style="@style/commonTextSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/time_to_alarm"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/recyclerViewAlarms"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewAppName"
+        tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewAlarms"
@@ -27,7 +43,7 @@
         app:layout_constraintBottom_toTopOf="@id/linearLayoutMenu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewAppName"
+        app:layout_constraintTop_toBottomOf="@id/textViewNearestAlarmTime"
         tools:itemCount="1"
         tools:listitem="@layout/item_alarm" />
 
@@ -45,10 +61,11 @@
 
     <TextView
         android:id="@+id/textViewEmptyAlarms"
-        style="@style/commonText"
+        style="@style/commonTextSize"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/empty_alarms"
+        android:textAlignment="center"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

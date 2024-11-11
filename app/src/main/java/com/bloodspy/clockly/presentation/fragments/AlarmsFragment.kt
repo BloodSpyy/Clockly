@@ -90,12 +90,13 @@ class AlarmsFragment : Fragment() {
                         }
 
                         is AlarmsStates.AlarmsLoaded -> {
-                            if (it.alarms.isNotEmpty()) {
-                                binding.textViewEmptyAlarms.visibility = View.GONE
-                                alarmsAdapter.submitList(it.alarms)
-                            } else {
-                                binding.textViewEmptyAlarms.visibility = View.VISIBLE
-                            }
+                            setupAlarms(it.alarms)
+
+                            viewModel.loadNearestAlarmTime()
+                        }
+
+                        is AlarmsStates.NearestAlarmTimeLoaded -> {
+                            setupNearestAlarmTime(it.nearestAlarmTime)
                         }
 
                         is AlarmsStates.EditSuccess -> {
@@ -168,6 +169,31 @@ class AlarmsFragment : Fragment() {
                 timeToAlarm
             )
         )
+    }
+
+    private fun setupAlarms(alarms: List<AlarmEntity>) {
+        with(binding) {
+            if (alarms.isNotEmpty()) {
+                textViewEmptyAlarms.visibility = View.GONE
+                alarmsAdapter.submitList(alarms)
+            } else {
+                textViewEmptyAlarms.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun setupNearestAlarmTime(nearestAlarmTime: Array<Int>?) {
+        with(binding) {
+            if (nearestAlarmTime == null) {
+                textViewNearestAlarmTime.visibility = View.GONE
+            }
+
+            nearestAlarmTime?.let {
+                textViewNearestAlarmTime.text = getCompletedStringToStartAlarm(it)
+
+                textViewNearestAlarmTime.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun showSuccessEditToast(timeToAlarm: String) {

@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.Flow
 interface AlarmRepository {
     fun getAlarms(): Flow<List<AlarmEntity>>
 
+    fun getNearestAlarmTime(): Flow<Long?>
+
     suspend fun getAlarm(alarmId: Int): AlarmEntity?
 
     suspend fun addAlarm(alarm: AlarmEntity): Long

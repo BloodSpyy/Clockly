@@ -12,6 +12,9 @@ interface AlarmDao {
     @Query("SELECT * FROM alarms ORDER BY alarmTime")
     fun getAlarms(): Flow<List<AlarmModel>>
 
+    @Query("SELECT MIN(alarmTime) FROM alarms WHERE isActive = 1")
+    fun getNearestAlarmTime(): Flow<Long?>
+
     @Query("SELECT * FROM alarms WHERE id = :alarmId")
     suspend fun getAlarm(alarmId: Int): AlarmModel?
 

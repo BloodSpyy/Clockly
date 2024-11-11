@@ -29,10 +29,11 @@
 
     <TextView
         android:id="@+id/textViewTimeToAlarm"
-        style="@style/commonText"
+        style="@style/commonTextSize"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/time_to_alarm"
+        android:textAlignment="center"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/timePickerAlarm"
         app:layout_constraintEnd_toEndOf="parent"
