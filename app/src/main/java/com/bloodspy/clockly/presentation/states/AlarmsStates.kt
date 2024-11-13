@@ -5,9 +5,10 @@ import com.bloodspy.clockly.domain.entities.AlarmEntity
 sealed class AlarmsStates {
     data object Initial : AlarmsStates()
 
-    class AlarmsLoaded(val alarms: List<AlarmEntity>) : AlarmsStates()
+    data class DataLoaded(
+        val alarms: List<AlarmEntity>,
+        val timeToNearestAlarm: Array<Int>?,
+    ) : AlarmsStates()
 
-    class NearestAlarmTimeLoaded(val nearestAlarmTime: Array<Int>?): AlarmsStates()
-
-    class EditSuccess(val timeToAlarm: Array<Int>) : AlarmsStates()
+    data class EditSuccess(val timeToAlarm: Array<Int>) : AlarmsStates()
 }

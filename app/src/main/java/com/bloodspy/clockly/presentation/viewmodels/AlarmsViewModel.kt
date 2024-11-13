@@ -1,7 +1,5 @@
 package com.bloodspy.clockly.presentation.viewmodels
 
-import android.os.CountDownTimer
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bloodspy.clockly.domain.entities.AlarmEntity
@@ -9,22 +7,19 @@ import com.bloodspy.clockly.domain.usecases.CancelAlarmUseCase
 import com.bloodspy.clockly.domain.usecases.DeleteAlarmUseCase
 import com.bloodspy.clockly.domain.usecases.EditAlarmUseCase
 import com.bloodspy.clockly.domain.usecases.GetAlarmsUseCase
-import com.bloodspy.clockly.domain.usecases.GetNearestAlarmTimeUseCase
 import com.bloodspy.clockly.domain.usecases.ScheduleAlarmUseCase
-import com.bloodspy.clockly.helpers.AlarmTimeHelper
 import com.bloodspy.clockly.helpers.TimeHelper
 import com.bloodspy.clockly.presentation.states.AlarmsStates
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import java.util.Calendar
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class AlarmsViewModel @Inject constructor(
     private val getAlarmsUseCase: GetAlarmsUseCase,
-    private val getNearestAlarmTimeUseCase: GetNearestAlarmTimeUseCase,
     private val deleteAlarmUseCase: DeleteAlarmUseCase,
     private val cancelAlarmUseCase: CancelAlarmUseCase,
     private val editAlarmUseCase: EditAlarmUseCase,
@@ -33,39 +28,33 @@ class AlarmsViewModel @Inject constructor(
     private val _state = MutableStateFlow<AlarmsStates>(AlarmsStates.Initial)
     val state = _state.asStateFlow()
 
-    private var countDownTimer: CountDownTimer? = null
+    private var updateTimeJob: Job? = null
 
-    fun loadAlarms() {
+    fun loadData() {
         viewModelScope.launch {
-            getAlarmsUseCase().collect {
-                _state.value = AlarmsStates.AlarmsLoaded(it)
-            }
-        }
-    }
+            getAlarmsUseCase().collect { alarms ->
+                updateTimeJob?.cancel()
 
-    fun loadNearestAlarmTime() {
-        viewModelScope.launch {
-            getNearestAlarmTimeUseCase().collect { nearestAlarmTime ->
-                countDownTimer?.cancel()
+                val nearestAlarm = alarms.filter { it.isActive }
+                    .minByOrNull { it.alarmTime }
 
-                if (nearestAlarmTime == null) {
-                    _state.value = AlarmsStates.NearestAlarmTimeLoaded(null)
-                }
+                if (nearestAlarm == null) {
+                    _state.value = AlarmsStates.DataLoaded(alarms, null)
+                } else {
+                    updateTimeJob = launch {
+                        while (isActive) {
+                            _state.value = AlarmsStates.DataLoaded(
+                                alarms,
+                                TimeHelper.getParsedTimeToStart(nearestAlarm.alarmTime)
+                            )
 
-                nearestAlarmTime?.let {
-                    val timeToStartAlarm = AlarmTimeHelper.getTimeToStartAlarm(it)
-
-                    _state.value = AlarmsStates.NearestAlarmTimeLoaded(
-                        AlarmTimeHelper.parseTimeToStartAlarm(timeToStartAlarm)
-                    )
-
-                    // wait to new minute for start count down
-                    delay(
-                        TimeHelper.MILLIS_IN_MINUTE -
-                                (System.currentTimeMillis() % TimeHelper.MILLIS_IN_MINUTE)
-                    )
-
-                    startCountDown(timeToStartAlarm)
+                            // delayed until new minute for timely update
+                            delay(
+                                TimeHelper.MILLIS_IN_MINUTE -
+                                        System.currentTimeMillis() % TimeHelper.MILLIS_IN_MINUTE
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -74,7 +63,7 @@ class AlarmsViewModel @Inject constructor(
     fun changeEnableState(alarmEntity: AlarmEntity) {
         viewModelScope.launch {
             val isActive = alarmEntity.isActive
-            val validatedAlarmTime = AlarmTimeHelper.validateAlarmTime(
+            val validatedAlarmTime = TimeHelper.validateTime(
                 alarmEntity.alarmTime
             )
 
@@ -91,9 +80,7 @@ class AlarmsViewModel @Inject constructor(
                 scheduleAlarmUseCase(alarmEntity.id, validatedAlarmTime)
 
                 _state.value = AlarmsStates.EditSuccess(
-                    AlarmTimeHelper.parseTimeToStartAlarm(
-                        AlarmTimeHelper.getTimeToStartAlarm(validatedAlarmTime)
-                    )
+                    TimeHelper.getParsedTimeToStart(validatedAlarmTime)
                 )
             }
         }
@@ -107,19 +94,5 @@ class AlarmsViewModel @Inject constructor(
                 cancelAlarmUseCase(alarmEntity.id)
             }
         }
-    }
-
-    private fun startCountDown(timeToStartAlarm: Long) {
-        countDownTimer = object : CountDownTimer(timeToStartAlarm, TimeHelper.MILLIS_IN_MINUTE) {
-            override fun onTick(p0: Long) {
-                _state.value = AlarmsStates.NearestAlarmTimeLoaded(
-                    AlarmTimeHelper.parseTimeToStartAlarm(p0)
-                )
-            }
-
-            override fun onFinish() {
-                _state.value = AlarmsStates.NearestAlarmTimeLoaded(null)
-            }
-        }.start()
     }
 }

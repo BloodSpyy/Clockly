@@ -18,7 +18,7 @@ import com.bloodspy.clockly.databinding.FragmentAlarmBinding
 import com.bloodspy.clockly.domain.entities.AlarmEntity
 import com.bloodspy.clockly.enums.ScreenMode
 import com.bloodspy.clockly.factories.ViewModelFactory
-import com.bloodspy.clockly.helpers.AlarmTimeHelper
+import com.bloodspy.clockly.helpers.TimeHelper
 import com.bloodspy.clockly.presentation.states.AlarmStates
 import com.bloodspy.clockly.presentation.viewmodels.AlarmViewModel
 import kotlinx.coroutines.launch
@@ -171,7 +171,7 @@ class AlarmFragment : Fragment() {
         return String.format(
             Locale.getDefault(),
             getString(R.string.time_to_alarm),
-            AlarmTimeHelper.getFormattedTimeToStartAlarm(
+            TimeHelper.getFormattedTimeToStart(
                 arrayOf(
                     resources.getStringArray(R.array.day_declination),
                     resources.getStringArray(R.array.hour_declination),

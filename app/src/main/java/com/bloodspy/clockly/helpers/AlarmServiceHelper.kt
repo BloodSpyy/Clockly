@@ -16,14 +16,14 @@ object AlarmServiceHelper {
             PendingIntent.getForegroundService(
                 context,
                 alarmId,
-                AlarmService.newIntentStartRingtone(context, alarmId),
+                AlarmService.newIntentStartAlarm(context, alarmId),
                 FLAG_IMMUTABLE or FLAG_UPDATE_CURRENT
             )
         } else {
             PendingIntent.getService(
                 context,
                 alarmId,
-                AlarmService.newIntentStartRingtone(context, alarmId),
+                AlarmService.newIntentStartAlarm(context, alarmId),
                 FLAG_IMMUTABLE or FLAG_UPDATE_CURRENT
             )
         }
@@ -36,14 +36,14 @@ object AlarmServiceHelper {
             PendingIntent.getForegroundService(
                 context,
                 alarmId,
-                AlarmService.newIntentStopRingtone(context, alarmId),
+                AlarmService.newIntentStopAlarm(context, alarmId),
                 FLAG_IMMUTABLE or FLAG_UPDATE_CURRENT
             )
         } else {
             PendingIntent.getService(
                 context,
                 alarmId,
-                AlarmService.newIntentStopRingtone(context, alarmId),
+                AlarmService.newIntentStopAlarm(context, alarmId),
                 FLAG_IMMUTABLE or FLAG_UPDATE_CURRENT
             )
         }

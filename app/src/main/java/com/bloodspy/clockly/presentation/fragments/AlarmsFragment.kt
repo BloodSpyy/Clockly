@@ -18,7 +18,7 @@ import com.bloodspy.clockly.R
 import com.bloodspy.clockly.databinding.FragmentAlarmsBinding
 import com.bloodspy.clockly.domain.entities.AlarmEntity
 import com.bloodspy.clockly.factories.ViewModelFactory
-import com.bloodspy.clockly.helpers.AlarmTimeHelper
+import com.bloodspy.clockly.helpers.TimeHelper
 import com.bloodspy.clockly.presentation.recyclerViewUtils.adapter.AlarmsAdapter
 import com.bloodspy.clockly.presentation.states.AlarmsStates
 import com.bloodspy.clockly.presentation.viewmodels.AlarmsViewModel
@@ -86,17 +86,12 @@ class AlarmsFragment : Fragment() {
                 viewModel.state.collect {
                     when (it) {
                         AlarmsStates.Initial -> {
-                            viewModel.loadAlarms()
+                            viewModel.loadData()
                         }
 
-                        is AlarmsStates.AlarmsLoaded -> {
+                        is AlarmsStates.DataLoaded -> {
                             setupAlarms(it.alarms)
-
-                            viewModel.loadNearestAlarmTime()
-                        }
-
-                        is AlarmsStates.NearestAlarmTimeLoaded -> {
-                            setupNearestAlarmTime(it.nearestAlarmTime)
+                            setupNearestAlarmTime(it.timeToNearestAlarm)
                         }
 
                         is AlarmsStates.EditSuccess -> {
@@ -160,7 +155,7 @@ class AlarmsFragment : Fragment() {
         return String.format(
             Locale.getDefault(),
             getString(R.string.time_to_alarm),
-            AlarmTimeHelper.getFormattedTimeToStartAlarm(
+            TimeHelper.getFormattedTimeToStart(
                 arrayOf(
                     resources.getStringArray(R.array.day_declination),
                     resources.getStringArray(R.array.hour_declination),

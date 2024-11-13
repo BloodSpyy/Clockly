@@ -12,9 +12,9 @@ import com.bloodspy.clockly.R
 import com.bloodspy.clockly.domain.entities.AlarmEntity
 import com.bloodspy.clockly.domain.repositories.AlarmRepository
 import com.bloodspy.clockly.helpers.AlarmServiceHelper
-import com.bloodspy.clockly.helpers.AlarmTimeHelper
 import com.bloodspy.clockly.helpers.NotificationChannelsHelper.ALARM_NOTIFICATION_CHANNEL_ID
 import com.bloodspy.clockly.helpers.RingtoneMediaPlayerHelper
+import com.bloodspy.clockly.helpers.TimeHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -107,7 +107,7 @@ class AlarmService : Service() {
             .setContentText(
                 String.format(
                     getString(R.string.alarm_notification),
-                    AlarmTimeHelper.parseAlarmTime(Calendar.getInstance().timeInMillis)
+                    TimeHelper.getParsedTime(Calendar.getInstance().timeInMillis)
                 )
             )
             .addAction(
@@ -165,14 +165,14 @@ class AlarmService : Service() {
         private const val START_ACTION = "start"
         private const val STOP_ACTION = "stop"
 
-        fun newIntentStartRingtone(context: Context, alarmId: Int): Intent = Intent(
+        fun newIntentStartAlarm(context: Context, alarmId: Int): Intent = Intent(
             context, AlarmService::class.java
         ).apply {
             putExtra(EXTRA_ACTION, START_ACTION)
             putExtra(EXTRA_ALARM_ID, alarmId)
         }
 
-        fun newIntentStopRingtone(context: Context, alarmId: Int): Intent = Intent(
+        fun newIntentStopAlarm(context: Context, alarmId: Int): Intent = Intent(
             context, AlarmService::class.java
         ).apply {
             putExtra(EXTRA_ACTION, STOP_ACTION)

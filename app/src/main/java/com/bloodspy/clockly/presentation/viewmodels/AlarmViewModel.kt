@@ -7,7 +7,7 @@ import com.bloodspy.clockly.domain.usecases.AddAlarmUseCase
 import com.bloodspy.clockly.domain.usecases.EditAlarmUseCase
 import com.bloodspy.clockly.domain.usecases.GetAlarmUseCase
 import com.bloodspy.clockly.domain.usecases.ScheduleAlarmUseCase
-import com.bloodspy.clockly.helpers.AlarmTimeHelper
+import com.bloodspy.clockly.helpers.TimeHelper
 import com.bloodspy.clockly.presentation.states.AlarmStates
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,7 +31,7 @@ class AlarmViewModel @Inject constructor(
             val alarmTime =
                 getAlarmUseCase(alarmId)?.alarmTime ?: Calendar.getInstance().timeInMillis
 
-            val (hour, minute) = AlarmTimeHelper.getHourAndMinuteFromAlarmTime(alarmTime)
+            val (hour, minute) = TimeHelper.getHourAndMinuteFromTime(alarmTime)
 
             _state.value = AlarmStates.AlarmTimeLoaded(hour, minute)
         }
@@ -40,14 +40,12 @@ class AlarmViewModel @Inject constructor(
     fun getTimeToAlarm(hour: Int, minute: Int) {
         _state.value = AlarmStates.Loading
 
-        val validatedTimeInMillis = AlarmTimeHelper.validateAlarmTime(
-            AlarmTimeHelper.getMillisFromAlarmTime(hour, minute)
+        val validatedTimeInMillis = TimeHelper.validateTime(
+            TimeHelper.getMillisFromTime(hour, minute)
         )
 
         _state.value = AlarmStates.TimeToAlarmLoaded(
-            AlarmTimeHelper.parseTimeToStartAlarm(
-                AlarmTimeHelper.getTimeToStartAlarm(validatedTimeInMillis)
-            )
+            TimeHelper.getParsedTimeToStart(validatedTimeInMillis)
         )
     }
 
@@ -55,8 +53,8 @@ class AlarmViewModel @Inject constructor(
         _state.value = AlarmStates.Loading
 
         val alarm = AlarmEntity(
-            alarmTime = AlarmTimeHelper.validateAlarmTime(
-                AlarmTimeHelper.getMillisFromAlarmTime(hour, minute)
+            alarmTime = TimeHelper.validateTime(
+                TimeHelper.getMillisFromTime(hour, minute)
             )
         )
 
@@ -66,9 +64,7 @@ class AlarmViewModel @Inject constructor(
             scheduleAlarmUseCase(alarmId, alarm.alarmTime)
 
             _state.value = AlarmStates.Success(
-                AlarmTimeHelper.parseTimeToStartAlarm(
-                    AlarmTimeHelper.getTimeToStartAlarm(alarm.alarmTime)
-                )
+                TimeHelper.getParsedTimeToStart(alarm.alarmTime)
             )
         }
     }
@@ -78,8 +74,8 @@ class AlarmViewModel @Inject constructor(
 
         val alarm = AlarmEntity(
             id = alarmId,
-            alarmTime = AlarmTimeHelper.validateAlarmTime(
-                AlarmTimeHelper.getMillisFromAlarmTime(hour, minute)
+            alarmTime = TimeHelper.validateTime(
+                TimeHelper.getMillisFromTime(hour, minute)
             )
         )
 
@@ -89,9 +85,7 @@ class AlarmViewModel @Inject constructor(
             scheduleAlarmUseCase(alarmId, alarm.alarmTime)
 
             _state.value = AlarmStates.Success(
-                AlarmTimeHelper.parseTimeToStartAlarm(
-                    AlarmTimeHelper.getTimeToStartAlarm(alarm.alarmTime)
-                )
+                TimeHelper.getParsedTimeToStart(alarm.alarmTime)
             )
         }
     }

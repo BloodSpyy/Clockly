@@ -1,16 +1,14 @@
 package com.bloodspy.clockly.presentation.recyclerViewUtils.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.bloodspy.clockly.databinding.ItemAlarmBinding
 import com.bloodspy.clockly.domain.entities.AlarmEntity
-import com.bloodspy.clockly.helpers.AlarmTimeHelper
+import com.bloodspy.clockly.helpers.TimeHelper
 import com.bloodspy.clockly.presentation.recyclerViewUtils.callback.AlarmsDiffCallback
 import com.bloodspy.clockly.presentation.recyclerViewUtils.viewholder.AlarmsViewHolder
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class AlarmsAdapter : ListAdapter<AlarmEntity, AlarmsViewHolder>(
     AlarmsDiffCallback()
@@ -44,7 +42,7 @@ class AlarmsAdapter : ListAdapter<AlarmEntity, AlarmsViewHolder>(
             }
 
             //todo подумай как убрать здесь преобразования и перенести их отсюда
-            textViewAlarmTime.text = AlarmTimeHelper.parseAlarmTime(alarm.alarmTime)
+            textViewAlarmTime.text = TimeHelper.getParsedTime(alarm.alarmTime)
             switchAlarm.isChecked = alarm.isActive
         }
     }
