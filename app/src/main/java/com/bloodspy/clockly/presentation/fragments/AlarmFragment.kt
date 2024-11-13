@@ -111,7 +111,7 @@ class AlarmFragment : Fragment() {
 
     private fun setupTimeChangedListener() {
         binding.timePickerAlarm.setOnTimeChangedListener { _, hour, minute ->
-            viewModel.getTimeToAlarm(hour, minute)
+            viewModel.updateTimePicker(hour, minute)
         }
     }
 
@@ -135,19 +135,15 @@ class AlarmFragment : Fragment() {
                                 timePickerAlarm.isEnabled = false
                             }
 
-                            is AlarmStates.AlarmTimeLoaded -> {
+                            is AlarmStates.DataLoaded -> {
                                 with(timePickerAlarm) {
-                                    hour = it.hour
-                                    minute = it.minute
+                                    hour = it.alarmTimeParts[1]
+                                    minute = it.alarmTimeParts[2]
                                 }
 
-                                viewModel.getTimeToAlarm(it.hour, it.minute)
-                            }
-
-                            is AlarmStates.TimeToAlarmLoaded -> {
                                 with(textViewTimeToAlarm) {
                                     text = getCompletedStringTimeToStartAlarm(
-                                        it.timeToAlarm
+                                        it.timeToAlarmParts
                                     )
                                     visibility = View.VISIBLE
                                 }

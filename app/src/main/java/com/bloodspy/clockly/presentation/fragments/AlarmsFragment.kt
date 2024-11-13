@@ -90,8 +90,8 @@ class AlarmsFragment : Fragment() {
                         }
 
                         is AlarmsStates.DataLoaded -> {
-                            setupAlarms(it.alarms)
                             setupNearestAlarmTime(it.timeToNearestAlarm)
+                            setupAlarms(it.alarms)
                         }
 
                         is AlarmsStates.EditSuccess -> {

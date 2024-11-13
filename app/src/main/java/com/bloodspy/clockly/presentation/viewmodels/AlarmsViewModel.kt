@@ -45,7 +45,7 @@ class AlarmsViewModel @Inject constructor(
                         while (isActive) {
                             _state.value = AlarmsStates.DataLoaded(
                                 alarms,
-                                TimeHelper.getParsedTimeToStart(nearestAlarm.alarmTime)
+                                TimeHelper.getParsedTimePartsToStart(nearestAlarm.alarmTime)
                             )
 
                             // delayed until new minute for timely update
@@ -80,7 +80,7 @@ class AlarmsViewModel @Inject constructor(
                 scheduleAlarmUseCase(alarmEntity.id, validatedAlarmTime)
 
                 _state.value = AlarmsStates.EditSuccess(
-                    TimeHelper.getParsedTimeToStart(validatedAlarmTime)
+                    TimeHelper.getParsedTimePartsToStart(validatedAlarmTime)
                 )
             }
         }

@@ -28,24 +28,30 @@ class AlarmViewModel @Inject constructor(
         _state.value = AlarmStates.Loading
 
         viewModelScope.launch {
-            val alarmTime =
+            val validatedTimeInMillis = TimeHelper.validateTime(
                 getAlarmUseCase(alarmId)?.alarmTime ?: Calendar.getInstance().timeInMillis
+            )
 
-            val (hour, minute) = TimeHelper.getHourAndMinuteFromTime(alarmTime)
-
-            _state.value = AlarmStates.AlarmTimeLoaded(hour, minute)
+            _state.value = AlarmStates.DataLoaded(
+                TimeHelper.getTimeParts(validatedTimeInMillis),
+                TimeHelper.getParsedTimePartsToStart(validatedTimeInMillis)
+            )
         }
     }
 
-    fun getTimeToAlarm(hour: Int, minute: Int) {
-        _state.value = AlarmStates.Loading
-
+    fun updateTimePicker(hour: Int, minute: Int) {
+        //todo тут я закостылил сегодняшний день, так как дни ты ещё не учитываешь
         val validatedTimeInMillis = TimeHelper.validateTime(
-            TimeHelper.getMillisFromTime(hour, minute)
+            TimeHelper.getMillisFromTimeParts(
+                Calendar.getInstance().get(Calendar.DAY_OF_MONTH),
+                hour,
+                minute
+            )
         )
 
-        _state.value = AlarmStates.TimeToAlarmLoaded(
-            TimeHelper.getParsedTimeToStart(validatedTimeInMillis)
+        _state.value = AlarmStates.DataLoaded(
+            TimeHelper.getTimeParts(validatedTimeInMillis),
+            TimeHelper.getParsedTimePartsToStart(validatedTimeInMillis)
         )
     }
 
@@ -53,8 +59,13 @@ class AlarmViewModel @Inject constructor(
         _state.value = AlarmStates.Loading
 
         val alarm = AlarmEntity(
+            //todo тут я закостылил сегодняшний день, так как дни ты ещё не учитываешь
             alarmTime = TimeHelper.validateTime(
-                TimeHelper.getMillisFromTime(hour, minute)
+                TimeHelper.getMillisFromTimeParts(
+                    Calendar.getInstance().get(Calendar.DAY_OF_MONTH),
+                    hour,
+                    minute
+                )
             )
         )
 
@@ -64,7 +75,7 @@ class AlarmViewModel @Inject constructor(
             scheduleAlarmUseCase(alarmId, alarm.alarmTime)
 
             _state.value = AlarmStates.Success(
-                TimeHelper.getParsedTimeToStart(alarm.alarmTime)
+                TimeHelper.getParsedTimePartsToStart(alarm.alarmTime)
             )
         }
     }
@@ -75,7 +86,12 @@ class AlarmViewModel @Inject constructor(
         val alarm = AlarmEntity(
             id = alarmId,
             alarmTime = TimeHelper.validateTime(
-                TimeHelper.getMillisFromTime(hour, minute)
+                //todo тут я закостылил сегодняшнее число, так как дни ты ещё не учитываешь
+                TimeHelper.getMillisFromTimeParts(
+                    Calendar.getInstance().get(Calendar.DAY_OF_MONTH),
+                    hour,
+                    minute
+                )
             )
         )
 
@@ -85,7 +101,7 @@ class AlarmViewModel @Inject constructor(
             scheduleAlarmUseCase(alarmId, alarm.alarmTime)
 
             _state.value = AlarmStates.Success(
-                TimeHelper.getParsedTimeToStart(alarm.alarmTime)
+                TimeHelper.getParsedTimePartsToStart(alarm.alarmTime)
             )
         }
     }

@@ -42,19 +42,20 @@ object TimeHelper {
         }.trim()
     }
 
-    fun getParsedTimeToStart(timeInMillis: Long): Array<Int> {
+    fun getParsedTimePartsToStart(timeInMillis: Long): Array<Int> {
         val timeToStartAlarm = getTimeToStart(timeInMillis)
 
-        val days = (timeToStartAlarm / TimeHelper.MILLIS_IN_DAY).toInt()
-        val hours = ((timeToStartAlarm / TimeHelper.MILLIS_IN_HOUR) % 24).toInt()
-        val minutes = ((timeToStartAlarm / TimeHelper.MILLIS_IN_MINUTE) % 60).toInt()
+        val days = (timeToStartAlarm / MILLIS_IN_DAY).toInt()
+        val hours = ((timeToStartAlarm / MILLIS_IN_HOUR) % 24).toInt()
+        val minutes = ((timeToStartAlarm / MILLIS_IN_MINUTE) % 60).toInt()
 
         return arrayOf(days, hours, minutes)
     }
 
-    fun getMillisFromTime(hour: Int, minute: Int): Long {
+    fun getMillisFromTimeParts(day: Int, hour: Int, minute: Int): Long {
         val calendar = Calendar.getInstance()
 
+        calendar.set(Calendar.DAY_OF_MONTH, day)
         calendar.set(Calendar.HOUR_OF_DAY, hour)
         calendar.set(Calendar.MINUTE, minute)
 
@@ -64,15 +65,16 @@ object TimeHelper {
         return calendar.timeInMillis
     }
 
-    fun getHourAndMinuteFromTime(timeInMillis: Long): Pair<Int, Int> {
+    fun getTimeParts(timeInMillis: Long): Array<Int> {
         val calendar = Calendar.getInstance().apply {
             this.timeInMillis = timeInMillis
         }
 
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
 
-        return Pair(hour, minute)
+        return arrayOf(day, hour, minute)
     }
 
     private fun getTimeToStart(timeInMillis: Long): Long {
