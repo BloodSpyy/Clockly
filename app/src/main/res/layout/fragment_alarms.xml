@@ -20,13 +20,13 @@
 
     <TextView
         android:id="@+id/textViewNearestAlarmTime"
-        style="@style/commonTextSize"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:text="@string/time_to_alarm"
+        android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/recyclerViewAlarms"
         app:layout_constraintEnd_toEndOf="parent"
@@ -61,11 +61,11 @@
 
     <TextView
         android:id="@+id/textViewEmptyAlarms"
-        style="@style/commonTextSize"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/empty_alarms"
         android:textAlignment="center"
+        android:textSize="18sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -77,7 +77,7 @@
         android:id="@+id/linearLayoutMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/grey"
+        android:background="@color/light_gray"
         android:orientation="horizontal"
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -89,7 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:background="@color/grey"
+            android:background="@color/light_gray"
             android:contentDescription="@string/alarm_button"
             android:src="@drawable/logo_alarm_active" />
 
@@ -98,7 +98,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:background="@color/grey"
+            android:background="@color/light_gray"
             android:contentDescription="@string/stopwatch_button"
             android:src="@drawable/logo_stopwatch_inactive" />
 
@@ -107,7 +107,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:background="@color/grey"
+            android:background="@color/light_gray"
             android:contentDescription="@string/weather_button"
             android:src="@drawable/logo_weather_inactive" />
     </LinearLayout>

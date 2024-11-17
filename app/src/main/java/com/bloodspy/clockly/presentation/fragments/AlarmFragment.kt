@@ -75,8 +75,9 @@ class AlarmFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setup24HourView()
         subscribeViewModel()
+        setupAlarmTitle()
+        setup24HourView()
         setupClickListeners()
         setupTimeChangedListener()
     }
@@ -85,6 +86,13 @@ class AlarmFragment : Fragment() {
         super.onDestroyView()
 
         _binding = null
+    }
+
+    private fun setupAlarmTitle() {
+        binding.textViewAlarmTitle.text = when (screenMode) {
+            ScreenMode.ADD_MODE -> getString(R.string.add_alarm_title)
+            ScreenMode.EDIT_MODE -> getString(R.string.edit_alarm_title)
+        }
     }
 
     private fun setup24HourView() {

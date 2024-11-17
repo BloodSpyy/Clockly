@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="switchAlarmItem" parent="Theme.AppCompat.Light">
-        <item name="colorControlActivated">@color/enable_thumb_blue</item>
-        <item name="colorSwitchThumbNormal">@color/disable_thumb_gray</item>
-        <item name="android:colorForeground">@color/disable_foreground_gray</item>
+    <style name="alarmItemSwitch" parent="Theme.AppCompat.Light">
+        <item name="colorControlActivated">@color/enable_thumb</item>
+        <item name="colorSwitchThumbNormal">@color/disable_thumb</item>
+        <item name="android:colorForeground">@color/disable_thumb_foreground</item>
     </style>
 
     <style name="appName">
@@ -13,7 +13,12 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="commonTextSize">
-        <item name="android:textSize">18sp</item>
+    <style name="weekdaysChip">
+        <item name="android:checkable">true</item>
+        <item name="chipStrokeColor">@color/white</item>
+        <item name="android:textSize">16sp</item>
+        <item name="chipCornerRadius">15dp</item>
+        <item name="android:textColor">@color/text_color_chip_state_list</item>
+        <item name="chipBackgroundColor">@color/background_chip_state_list</item>
     </style>
 </resources>

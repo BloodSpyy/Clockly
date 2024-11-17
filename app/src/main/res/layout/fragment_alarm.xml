@@ -7,48 +7,72 @@
 
     <TextView
         android:id="@+id/textViewCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="@string/cancel_button"
+        android:textColor="@color/button_background"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toBottomOf="@id/textViewAlarmTitle"
+        app:layout_constraintEnd_toStartOf="@id/textViewAlarmTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/textViewAlarmTitle" />
+
+    <TextView
+        android:id="@+id/textViewAlarmTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="@string/cancel_button"
-        android:textColor="@color/button_background"
+        android:text="@string/add_alarm_title"
+        android:textAlignment="center"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/textViewSave"
+        app:layout_constraintStart_toEndOf="@id/textViewCancel"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/add_alarm_title" />
 
     <TextView
         android:id="@+id/textViewSave"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_marginEnd="10dp"
         android:text="@string/save_button"
         android:textColor="@color/button_background"
-        android:textSize="20sp"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toBottomOf="@id/textViewAlarmTitle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/textViewAlarmTitle"
+        app:layout_constraintTop_toTopOf="@id/textViewAlarmTitle" />
 
     <TextView
         android:id="@+id/textViewTimeToAlarm"
-        style="@style/commonTextSize"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="10dp"
         android:text="@string/time_to_alarm"
         android:textAlignment="center"
+        android:textSize="15sp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/timePickerAlarm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewCancel"
         tools:visibility="visible" />
 
     <TimePicker
         android:id="@+id/timePickerAlarm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/shape_background_gray"
         android:timePickerMode="spinner"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/horizontalScrollViewWeekdays"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/textViewTimeToAlarm" />
 
     <ProgressBar
         android:id="@+id/progressBarLoading"
@@ -60,5 +84,75 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollViewWeekdays"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/shape_background_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/timePickerAlarm">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupWeekdays"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:singleLine="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipMonday"
+                style="@style/weekdaysChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/chip_monday" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipTuesday"
+                style="@style/weekdaysChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/chip_tuesday" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipWednesday"
+                style="@style/weekdaysChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/chip_wednesday" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipThursday"
+                style="@style/weekdaysChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/chip_thursday" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipFriday"
+                style="@style/weekdaysChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/chip_friday" />
+
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipSaturday"
+                style="@style/weekdaysChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/chip_saturday" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipSunday"
+                style="@style/weekdaysChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/chip_sunday" />
+
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

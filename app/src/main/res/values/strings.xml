@@ -12,6 +12,9 @@
     <string name="alarm_notification_button">Остановить</string>
     <string name="alarm_notification_channel_name">Будильник</string>
 
+    <string name="add_alarm_title">Новый будильник</string>
+    <string name="edit_alarm_title">Изменить будильник</string>
+
     <string name="hours_hint">Часы</string>
     <string name="minutes_hint">Минуты</string>
 
@@ -19,7 +22,15 @@
     <string name="snackbar_action">Настройки</string>
 
     <string name="empty_alarms">Нет установленных будильников</string>
-    <string name="time_to_alarm">Звонок через %s</string>
+    <string name="time_to_alarm">Будильник через %s</string>
+
+    <string name="chip_monday">П</string>
+    <string name="chip_tuesday">В</string>
+    <string name="chip_wednesday">С</string>
+    <string name="chip_thursday">Ч</string>
+    <string name="chip_friday">П</string>
+    <string name="chip_saturday">С</string>
+    <string name="chip_sunday">В</string>
 
     <string name="day_singular_number">день</string>
     <string name="day_plural_number">дней</string>

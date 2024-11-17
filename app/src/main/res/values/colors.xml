@@ -2,16 +2,20 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="light_gray">#e5e5ea</color>
+    <color name="dark_grey">#848486</color>
+    <color name="blue">#1c45ff</color>
 
-    <color name="disable_foreground_gray">#848486</color>
-    <color name="disable_thumb_gray">#f1f1f1</color>
-    <color name="enable_thumb_blue">#1c45ff</color>
+    <color name="disable_thumb_foreground">@color/dark_grey</color>
+    <color name="disable_thumb">@color/light_gray</color>
+    <color name="enable_thumb">@color/blue</color>
 
-    <color name="grey">#e5e5ea</color>
+    <color name="inactive_menu_item">@color/dark_grey</color>
+    <color name="active_menu_item">@color/black</color>
 
-    <color name="inactive_menu_item">#666769</color>
-    <color name="active_menu_item">#000000</color>
+    <color name="button_background">@color/blue</color>
+    <color name="button_foreground">@color/white</color>
 
-    <color name="button_background">#007AFF</color>
-    <color name="button_foreground">#ffffff</color>
+    <color name="chip_checked">@color/blue</color>
+    <color name="chip_unchecked">@color/white</color>
 </resources>
