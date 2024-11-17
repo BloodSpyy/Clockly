@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:text="@string/cancel_button"
+        android:text="@string/cancel_button_content_description"
         android:textColor="@color/button_background"
         android:textSize="17sp"
         app:layout_constraintBottom_toBottomOf="@id/textViewAlarmTitle"
@@ -37,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
-        android:text="@string/save_button"
+        android:text="@string/save_button_content_description"
         android:textColor="@color/button_background"
         android:textSize="17sp"
         app:layout_constraintBottom_toBottomOf="@id/textViewAlarmTitle"
@@ -67,12 +67,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:background="@drawable/shape_background_gray"
+        android:background="@drawable/shape_background_white"
         android:timePickerMode="spinner"
-        app:layout_constraintBottom_toTopOf="@id/horizontalScrollViewWeekdays"
+        app:layout_constraintBottom_toTopOf="@id/chipRepeatingAlarm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewTimeToAlarm" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chipRepeatingAlarm"
+        style="@style/chipOnLightGrayBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/chip_repeating_alarm"
+        android:text="@string/chip_repeating_alarm"
+        app:layout_constraintBottom_toTopOf="@id/linearLayoutDayOfWeek"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/timePickerAlarm" />
 
     <ProgressBar
         android:id="@+id/progressBarLoading"
@@ -85,74 +97,102 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <HorizontalScrollView
-        android:id="@+id/horizontalScrollViewWeekdays"
+    <LinearLayout
+        android:id="@+id/linearLayoutDayOfWeek"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:background="@drawable/shape_background_gray"
+        android:background="@drawable/shape_background_white"
+        android:orientation="vertical"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/timePickerAlarm">
+        app:layout_constraintTop_toBottomOf="@id/chipRepeatingAlarm"
+        tools:visibility="visible">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/day_of_week_alarm_repeat"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textViewRepetitionDays"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/blue"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:text="Одиночный будильник" />
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chipGroupWeekdays"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:paddingTop="10dp"
+            android:paddingBottom="15dp"
             app:singleLine="true">
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipMonday"
-                style="@style/weekdaysChip"
+                style="@style/chipOnWhiteBackground"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/chip_monday_content_description"
                 android:text="@string/chip_monday" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipTuesday"
-                style="@style/weekdaysChip"
+                style="@style/chipOnWhiteBackground"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/chip_tuesday_content_description"
                 android:text="@string/chip_tuesday" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipWednesday"
-                style="@style/weekdaysChip"
+                style="@style/chipOnWhiteBackground"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/chip_wednesday_content_description"
                 android:text="@string/chip_wednesday" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipThursday"
-                style="@style/weekdaysChip"
+                style="@style/chipOnWhiteBackground"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/chip_thursday_content_description"
                 android:text="@string/chip_thursday" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipFriday"
-                style="@style/weekdaysChip"
+                style="@style/chipOnWhiteBackground"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/chip_friday_content_description"
                 android:text="@string/chip_friday" />
-
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipSaturday"
-                style="@style/weekdaysChip"
+                style="@style/chipOnWhiteBackground"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/chip_saturday_content_description"
                 android:text="@string/chip_saturday" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipSunday"
-                style="@style/weekdaysChip"
+                style="@style/chipOnWhiteBackground"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/chip_sunday_content_description"
                 android:text="@string/chip_sunday" />
-
         </com.google.android.material.chip.ChipGroup>
-    </HorizontalScrollView>
-
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

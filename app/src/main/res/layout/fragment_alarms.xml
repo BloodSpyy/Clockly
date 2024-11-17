@@ -53,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
         android:background="@drawable/shape_add_button"
-        android:contentDescription="@string/add_alarm_button"
+        android:contentDescription="@string/add_alarm_button_content_description"
         app:layout_constraintBottom_toTopOf="@id/linearLayoutMenu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -77,7 +77,7 @@
         android:id="@+id/linearLayoutMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/light_gray"
+        android:background="@color/white"
         android:orientation="horizontal"
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -89,8 +89,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:background="@color/light_gray"
-            android:contentDescription="@string/alarm_button"
+            android:background="@color/white"
+            android:contentDescription="@string/alarm_button_content_description"
             android:src="@drawable/logo_alarm_active" />
 
         <ImageButton
@@ -98,8 +98,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:background="@color/light_gray"
-            android:contentDescription="@string/stopwatch_button"
+            android:background="@color/white"
+            android:contentDescription="@string/stopwatch_button_content_description"
             android:src="@drawable/logo_stopwatch_inactive" />
 
         <ImageButton
@@ -107,8 +107,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:background="@color/light_gray"
-            android:contentDescription="@string/weather_button"
+            android:background="@color/white"
+            android:contentDescription="@string/weather_button_content_description"
             android:src="@drawable/logo_weather_inactive" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

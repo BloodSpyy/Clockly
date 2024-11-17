@@ -3,6 +3,7 @@ package com.bloodspy.clockly.presentation.fragments
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -101,6 +102,14 @@ class AlarmFragment : Fragment() {
 
     private fun setupClickListeners() {
         with(binding) {
+            chipRepeatingAlarm.setOnClickListener {
+                linearLayoutDayOfWeek.visibility = if (chipRepeatingAlarm.isChecked) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+            }
+
             textViewSave.setOnClickListener {
                 val hour = timePickerAlarm.hour
                 val minute = timePickerAlarm.minute

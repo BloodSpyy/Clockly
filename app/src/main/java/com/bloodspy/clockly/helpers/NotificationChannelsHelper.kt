@@ -31,7 +31,7 @@ object NotificationChannelsHelper {
     ) {
         val alarmNotificationChannel = NotificationChannel(
             ALARM_NOTIFICATION_CHANNEL_ID,
-            context.getString(R.string.alarm_notification_channel_name),
+            context.getString(R.string.channel_name_alarm_notification),
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
             setSound(null, null)

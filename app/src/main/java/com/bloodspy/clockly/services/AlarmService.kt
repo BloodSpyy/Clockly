@@ -112,7 +112,7 @@ class AlarmService : Service() {
             )
             .addAction(
                 R.mipmap.ic_launcher_round,
-                getString(R.string.alarm_notification_button),
+                getString(R.string.button_alarm_notification),
                 AlarmServiceHelper.getStopAlarmServicePendingIntent(
                     this,
                     alarmId

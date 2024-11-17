@@ -1,28 +1,31 @@
 <resources>
     <string name="app_name">Clockly</string>
 
-    <string name="add_alarm_button">Добавить будильник</string>
-    <string name="alarm_button">Будильник</string>
-    <string name="stopwatch_button">Секундомер</string>
-    <string name="weather_button">Погода</string>
-    <string name="cancel_button">Отменить</string>
-    <string name="save_button">Сохранить</string>
+    <string name="add_alarm_button_content_description">Добавить будильник</string>
+    <string name="alarm_button_content_description">Будильник</string>
+    <string name="stopwatch_button_content_description">Секундомер</string>
+    <string name="weather_button_content_description">Погода</string>
+    <string name="cancel_button_content_description">Отменить</string>
+    <string name="save_button_content_description">Сохранить</string>
+
+    <string name="chip_monday_content_description">Понедельник</string>
+    <string name="chip_tuesday_content_description">Вторник</string>
+    <string name="chip_wednesday_content_description">Среда</string>
+    <string name="chip_thursday_content_description">Четверг</string>
+    <string name="chip_friday_content_description">Пятница</string>
+    <string name="chip_saturday_content_description">Суббота</string>
+    <string name="chip_sunday_content_description">Воскресенье</string>
 
     <string name="alarm_notification">Будильник в %s</string>
-    <string name="alarm_notification_button">Остановить</string>
-    <string name="alarm_notification_channel_name">Будильник</string>
+    <string name="button_alarm_notification">Остановить</string>
+    <string name="channel_name_alarm_notification">Будильник</string>
 
     <string name="add_alarm_title">Новый будильник</string>
     <string name="edit_alarm_title">Изменить будильник</string>
 
-    <string name="hours_hint">Часы</string>
-    <string name="minutes_hint">Минуты</string>
+    <string name="chip_repeating_alarm">Повторяющийся будильник</string>
 
-    <string name="snackbar_message">Разрешите отправку уведомлений для корректной работы приложения</string>
-    <string name="snackbar_action">Настройки</string>
-
-    <string name="empty_alarms">Нет установленных будильников</string>
-    <string name="time_to_alarm">Будильник через %s</string>
+    <string name="day_of_week_alarm_repeat">Повтор</string>
 
     <string name="chip_monday">П</string>
     <string name="chip_tuesday">В</string>
@@ -31,6 +34,15 @@
     <string name="chip_friday">П</string>
     <string name="chip_saturday">С</string>
     <string name="chip_sunday">В</string>
+
+    <string name="hint_hours">Часы</string>
+    <string name="hint_minutes">Минуты</string>
+
+    <string name="snackbar_message">Разрешите отправку уведомлений для корректной работы приложения</string>
+    <string name="snackbar_action">Настройки</string>
+
+    <string name="empty_alarms">Нет установленных будильников</string>
+    <string name="time_to_alarm">Будильник через %s</string>
 
     <string name="day_singular_number">день</string>
     <string name="day_plural_number">дней</string>

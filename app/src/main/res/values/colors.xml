@@ -3,19 +3,20 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="light_gray">#e5e5ea</color>
-    <color name="dark_grey">#848486</color>
+    <color name="dark_gray">#848486</color>
     <color name="blue">#1c45ff</color>
 
-    <color name="disable_thumb_foreground">@color/dark_grey</color>
+    <color name="disable_thumb_foreground">@color/dark_gray</color>
     <color name="disable_thumb">@color/light_gray</color>
     <color name="enable_thumb">@color/blue</color>
 
-    <color name="inactive_menu_item">@color/dark_grey</color>
+    <color name="inactive_menu_item">@color/dark_gray</color>
     <color name="active_menu_item">@color/black</color>
 
     <color name="button_background">@color/blue</color>
     <color name="button_foreground">@color/white</color>
 
     <color name="chip_checked">@color/blue</color>
-    <color name="chip_unchecked">@color/white</color>
+    <color name="chip_unchecked_for_white_bg">@color/light_gray</color>
+    <color name="chip_unchecked_for_light_gray_bg">@color/white</color>
 </resources>

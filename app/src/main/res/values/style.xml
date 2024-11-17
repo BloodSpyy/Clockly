@@ -13,12 +13,25 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="weekdaysChip">
+    <style name="chipOnWhiteBackground">
         <item name="android:checkable">true</item>
-        <item name="chipStrokeColor">@color/white</item>
+        <item name="chipStrokeWidth">0dp</item>
         <item name="android:textSize">16sp</item>
         <item name="chipCornerRadius">15dp</item>
         <item name="android:textColor">@color/text_color_chip_state_list</item>
-        <item name="chipBackgroundColor">@color/background_chip_state_list</item>
+        <item name="chipBackgroundColor">
+            @color/bg_chip_state_list_for_white_bg
+        </item>
+    </style>
+
+    <style name="chipOnLightGrayBackground">
+        <item name="android:checkable">true</item>
+        <item name="chipStrokeWidth">0dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="chipCornerRadius">15dp</item>
+        <item name="android:textColor">@color/text_color_chip_state_list</item>
+        <item name="chipBackgroundColor">
+            @color/bg_chip_state_list_for_light_gray_bg
+        </item>
     </style>
 </resources>
