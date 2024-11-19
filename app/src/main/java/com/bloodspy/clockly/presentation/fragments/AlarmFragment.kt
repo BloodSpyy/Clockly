@@ -3,7 +3,6 @@ package com.bloodspy.clockly.presentation.fragments
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +22,7 @@ import com.bloodspy.clockly.helpers.TimeHelper
 import com.bloodspy.clockly.presentation.states.AlarmStates
 import com.bloodspy.clockly.presentation.viewmodels.AlarmViewModel
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
 
@@ -81,55 +81,13 @@ class AlarmFragment : Fragment() {
         setup24HourView()
         setupClickListeners()
         setupTimeChangedListener()
+        setupChipGroupDaysOfWeekListener()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
 
         _binding = null
-    }
-
-    private fun setupAlarmTitle() {
-        binding.textViewAlarmTitle.text = when (screenMode) {
-            ScreenMode.ADD_MODE -> getString(R.string.add_alarm_title)
-            ScreenMode.EDIT_MODE -> getString(R.string.edit_alarm_title)
-        }
-    }
-
-    private fun setup24HourView() {
-        binding.timePickerAlarm.setIs24HourView(true)
-    }
-
-    private fun setupClickListeners() {
-        with(binding) {
-            chipRepeatingAlarm.setOnClickListener {
-                linearLayoutDayOfWeek.visibility = if (chipRepeatingAlarm.isChecked) {
-                    View.VISIBLE
-                } else {
-                    View.GONE
-                }
-            }
-
-            textViewSave.setOnClickListener {
-                val hour = timePickerAlarm.hour
-                val minute = timePickerAlarm.minute
-
-                when (screenMode) {
-                    ScreenMode.ADD_MODE -> viewModel.addAlarm(hour, minute)
-                    ScreenMode.EDIT_MODE -> viewModel.editAlarm(alarmId, hour, minute)
-                }
-            }
-
-            textViewCancel.setOnClickListener {
-                onEndWorkListener.onEndWork()
-            }
-        }
-    }
-
-    private fun setupTimeChangedListener() {
-        binding.timePickerAlarm.setOnTimeChangedListener { _, hour, minute ->
-            viewModel.updateTimePicker(hour, minute)
-        }
     }
 
     private fun subscribeViewModel() {
@@ -153,17 +111,9 @@ class AlarmFragment : Fragment() {
                             }
 
                             is AlarmStates.DataLoaded -> {
-                                with(timePickerAlarm) {
-                                    hour = it.alarmTimeParts[1]
-                                    minute = it.alarmTimeParts[2]
-                                }
-
-                                with(textViewTimeToAlarm) {
-                                    text = getCompletedStringTimeToStartAlarm(
-                                        it.timeToAlarmParts
-                                    )
-                                    visibility = View.VISIBLE
-                                }
+                                setupTimePicker(it.alarmTimeParts)
+                                setupTimeToAlarm(it.timeToAlarmParts)
+                                setupRepetitionDays()
                             }
 
                             is AlarmStates.Success -> {
@@ -176,6 +126,140 @@ class AlarmFragment : Fragment() {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private fun setupAlarmTitle() {
+        binding.textViewAlarmTitle.text = when (screenMode) {
+            ScreenMode.ADD_MODE -> getString(R.string.add_alarm_title)
+            ScreenMode.EDIT_MODE -> getString(R.string.edit_alarm_title)
+        }
+    }
+
+    private fun setup24HourView() {
+        binding.timePickerAlarm.setIs24HourView(true)
+    }
+
+    private fun setupClickListeners() {
+        setupSaveClickListener()
+        setupCancelClickListener()
+        setupChipRepeatingAlarmClickListener()
+    }
+
+    private fun setupChipGroupDaysOfWeekListener() {
+        with(binding) {
+            chipGroupDaysOfWeek.setOnCheckedStateChangeListener { _, checkedIds ->
+                viewModel.updateTimeToStart(
+                    getDaysOfWeekFromCheckedChipIds(checkedIds),
+                    timePickerAlarm.hour,
+                    timePickerAlarm.minute
+                )
+            }
+        }
+    }
+
+    private fun setupChipRepeatingAlarmClickListener() {
+        with(binding) {
+            chipRepeatingAlarm.setOnClickListener {
+                linearLayoutDaysOfWeek.visibility = if (chipRepeatingAlarm.isChecked) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+            }
+        }
+    }
+
+    private fun setupSaveClickListener() {
+        with(binding) {
+            textViewSave.setOnClickListener {
+                val hour = timePickerAlarm.hour
+                val minute = timePickerAlarm.minute
+
+                when (screenMode) {
+                    ScreenMode.ADD_MODE -> viewModel.addAlarm(hour, minute)
+                    ScreenMode.EDIT_MODE -> viewModel.editAlarm(alarmId, hour, minute)
+                }
+            }
+        }
+    }
+
+    private fun setupCancelClickListener() {
+        binding.textViewCancel.setOnClickListener {
+            onEndWorkListener.onEndWork()
+        }
+    }
+
+    private fun setupTimeChangedListener() {
+        with(binding) {
+            timePickerAlarm.setOnTimeChangedListener { _, hour, minute ->
+                viewModel.updateTimeToStart(
+                    getDaysOfWeekFromCheckedChipIds(chipGroupDaysOfWeek.checkedChipIds),
+                    hour,
+                    minute
+                )
+            }
+        }
+
+    }
+
+    private fun getDaysOfWeekFromCheckedChipIds(chipIds: List<Int>): List<Int> {
+        return chipIds.map {
+            with(binding) {
+                when (it) {
+                    chipSunday.id -> Calendar.SUNDAY
+                    chipMonday.id -> Calendar.MONDAY
+                    chipTuesday.id -> Calendar.TUESDAY
+                    chipWednesday.id -> Calendar.WEDNESDAY
+                    chipThursday.id -> Calendar.THURSDAY
+                    chipFriday.id -> Calendar.FRIDAY
+                    chipSaturday.id -> Calendar.SATURDAY
+                    else -> throw RuntimeException("Unkwown chip id")
+                }
+            }
+        }
+    }
+
+    private fun setupTimePicker(alarmTimeParts: Array<Int>) {
+        with(binding.timePickerAlarm) {
+            hour = alarmTimeParts[1]
+            minute = alarmTimeParts[2]
+        }
+    }
+
+    private fun setupTimeToAlarm(timeToAlarmParts: Array<Int>) {
+        with(binding.textViewTimeToAlarm) {
+            text = getCompletedStringTimeToStartAlarm(
+                timeToAlarmParts
+            )
+            visibility = View.VISIBLE
+        }
+    }
+
+    private fun setupRepetitionDays() {
+        with(binding) {
+            textViewRepetitionDays.text = if (chipGroupDaysOfWeek.checkedChipIds.isEmpty()) {
+                getString(R.string.repetition_days_one_time_alarm)
+            } else {
+                val repetitionDays = mutableListOf<String>()
+
+                chipGroupDaysOfWeek.checkedChipIds.forEach {
+                    repetitionDays.add(
+                        when (it) {
+                            chipSunday.id -> getString(R.string.repetition_days_sunday)
+                            chipMonday.id -> getString(R.string.repetition_days_monday)
+                            chipTuesday.id -> getString(R.string.repetition_days_tuesday)
+                            chipWednesday.id -> getString(R.string.repetition_days_wednesday)
+                            chipThursday.id -> getString(R.string.repetition_days_thursday)
+                            chipFriday.id -> getString(R.string.repetition_days_friday)
+                            chipSaturday.id -> getString(R.string.repetition_days_saturday)
+                            else -> throw RuntimeException("Unkwown chip id")
+                        }
+                    )
+                }
+
+                repetitionDays.joinToString()
             }
         }
     }

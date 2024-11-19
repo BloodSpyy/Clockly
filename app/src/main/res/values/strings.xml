@@ -23,9 +23,18 @@
     <string name="add_alarm_title">Новый будильник</string>
     <string name="edit_alarm_title">Изменить будильник</string>
 
+    <string name="repetition_days_one_time_alarm">Одиночный будильник</string>
+    <string name="repetition_days_monday">Пн</string>
+    <string name="repetition_days_tuesday">Вт</string>
+    <string name="repetition_days_wednesday">Ср</string>
+    <string name="repetition_days_thursday">Чт</string>
+    <string name="repetition_days_friday">Пт</string>
+    <string name="repetition_days_saturday">Сб</string>
+    <string name="repetition_days_sunday">Вс</string>
+
     <string name="chip_repeating_alarm">Повторяющийся будильник</string>
 
-    <string name="day_of_week_alarm_repeat">Повтор</string>
+    <string name="days_of_week_alarm_repeat">Повтор</string>
 
     <string name="chip_monday">П</string>
     <string name="chip_tuesday">В</string>

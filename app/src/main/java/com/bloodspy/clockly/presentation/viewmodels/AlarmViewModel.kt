@@ -1,5 +1,6 @@
 package com.bloodspy.clockly.presentation.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bloodspy.clockly.domain.entities.AlarmEntity
@@ -28,8 +29,10 @@ class AlarmViewModel @Inject constructor(
         _state.value = AlarmStates.Loading
 
         viewModelScope.launch {
-            val validatedTimeInMillis = TimeHelper.validateTime(
-                getAlarmUseCase(alarmId)?.alarmTime ?: Calendar.getInstance().timeInMillis
+            //todo тут я закостылил isOneAlarmTime
+            val validatedTimeInMillis = TimeHelper.validateAlarmTime(
+                getAlarmUseCase(alarmId)?.alarmTime ?: Calendar.getInstance().timeInMillis,
+                true
             )
 
             _state.value = AlarmStates.DataLoaded(
@@ -39,15 +42,20 @@ class AlarmViewModel @Inject constructor(
         }
     }
 
-    fun updateTimePicker(hour: Int, minute: Int) {
-        //todo тут я закостылил сегодняшний день, так как дни ты ещё не учитываешь
-        val validatedTimeInMillis = TimeHelper.validateTime(
-            TimeHelper.getMillisFromTimeParts(
-                Calendar.getInstance().get(Calendar.DAY_OF_MONTH),
-                hour,
-                minute
+    fun updateTimeToStart(daysOfWeek: List<Int>, hour: Int, minute: Int) {
+        val isOneTimeAlarm = (daysOfWeek.isEmpty())
+
+        val validatedTimeInMillis = if (isOneTimeAlarm) {
+            TimeHelper.validateAlarmTime(
+                TimeHelper.getMillisFromTimeParts(null, hour, minute), isOneTimeAlarm
             )
-        )
+        } else {
+            daysOfWeek.minOf {
+                TimeHelper.validateAlarmTime(
+                    TimeHelper.getMillisFromTimeParts(it, hour, minute), isOneTimeAlarm
+                )
+            }
+        }
 
         _state.value = AlarmStates.DataLoaded(
             TimeHelper.getTimeParts(validatedTimeInMillis),
@@ -59,13 +67,14 @@ class AlarmViewModel @Inject constructor(
         _state.value = AlarmStates.Loading
 
         val alarm = AlarmEntity(
-            //todo тут я закостылил сегодняшний день, так как дни ты ещё не учитываешь
-            alarmTime = TimeHelper.validateTime(
+            //todo тут я закостылил сегодняшний день + isOneTimeAlarm, так как дни ты ещё не учитываешь
+            alarmTime = TimeHelper.validateAlarmTime(
                 TimeHelper.getMillisFromTimeParts(
                     Calendar.getInstance().get(Calendar.DAY_OF_MONTH),
                     hour,
                     minute
-                )
+                ),
+                false
             )
         )
 
@@ -85,13 +94,14 @@ class AlarmViewModel @Inject constructor(
 
         val alarm = AlarmEntity(
             id = alarmId,
-            alarmTime = TimeHelper.validateTime(
-                //todo тут я закостылил сегодняшнее число, так как дни ты ещё не учитываешь
+            alarmTime = TimeHelper.validateAlarmTime(
+                //todo тут я закостылил сегодняшнее число + isOneTImeALarm, так как дни ты ещё не учитываешь
                 TimeHelper.getMillisFromTimeParts(
                     Calendar.getInstance().get(Calendar.DAY_OF_MONTH),
                     hour,
                     minute
-                )
+                ),
+                false
             )
         )
 

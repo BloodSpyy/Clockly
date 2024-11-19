@@ -81,7 +81,7 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/chip_repeating_alarm"
         android:text="@string/chip_repeating_alarm"
-        app:layout_constraintBottom_toTopOf="@id/linearLayoutDayOfWeek"
+        app:layout_constraintBottom_toTopOf="@id/linearLayoutDaysOfWeek"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/timePickerAlarm" />
@@ -98,7 +98,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:id="@+id/linearLayoutDayOfWeek"
+        android:id="@+id/linearLayoutDaysOfWeek"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -115,7 +115,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="@string/day_of_week_alarm_repeat"
+            android:text="@string/days_of_week_alarm_repeat"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -130,13 +130,21 @@
             tools:text="Одиночный будильник" />
 
         <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chipGroupWeekdays"
+            android:id="@+id/chipGroupDaysOfWeek"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:paddingTop="10dp"
             android:paddingBottom="15dp"
             app:singleLine="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipSunday"
+                style="@style/chipOnWhiteBackground"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/chip_sunday_content_description"
+                android:text="@string/chip_sunday" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipMonday"
@@ -185,14 +193,6 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/chip_saturday_content_description"
                 android:text="@string/chip_saturday" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipSunday"
-                style="@style/chipOnWhiteBackground"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/chip_sunday_content_description"
-                android:text="@string/chip_sunday" />
         </com.google.android.material.chip.ChipGroup>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

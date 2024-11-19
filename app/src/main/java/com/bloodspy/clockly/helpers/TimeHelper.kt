@@ -11,13 +11,12 @@ object TimeHelper {
     const val MILLIS_IN_HOUR = MILLIS_IN_MINUTE * 60
     const val MILLIS_IN_DAY = MILLIS_IN_HOUR * 24
 
-    fun validateTime(timeInMillis: Long): Long {
-        // if input time <= current time -> add 1 day
-        return if (timeInMillis <= Calendar.getInstance().timeInMillis) {
-            addDayToAlarmTime(timeInMillis)
-        } else {
-            timeInMillis
-        }
+    fun validateAlarmTime(timeInMillis: Long, isOneTimeAlarm: Boolean): Long {
+        if (timeInMillis > Calendar.getInstance().timeInMillis) return timeInMillis
+
+        val unitOfTimeToAdd = if (isOneTimeAlarm) Calendar.DAY_OF_MONTH else Calendar.WEEK_OF_MONTH
+
+        return addUnitOfTimeToAlarmTime(timeInMillis, unitOfTimeToAdd)
     }
 
     fun getParsedTime(timeInMillis: Long, pattern: String = "HH:mm"): String {
@@ -52,10 +51,13 @@ object TimeHelper {
         return arrayOf(days, hours, minutes)
     }
 
-    fun getMillisFromTimeParts(day: Int, hour: Int, minute: Int): Long {
+    fun getMillisFromTimeParts(day: Int?, hour: Int, minute: Int): Long {
         val calendar = Calendar.getInstance()
 
-        calendar.set(Calendar.DAY_OF_MONTH, day)
+        if (day != null) {
+            calendar.set(Calendar.DAY_OF_WEEK, day)
+        }
+
         calendar.set(Calendar.HOUR_OF_DAY, hour)
         calendar.set(Calendar.MINUTE, minute)
 
@@ -108,10 +110,11 @@ object TimeHelper {
         }
     }
 
-    private fun addDayToAlarmTime(timeInMillis: Long): Long {
+    private fun addUnitOfTimeToAlarmTime(timeInMillis: Long, unitOfTime: Int): Long {
         return Calendar.getInstance().apply {
             this.timeInMillis = timeInMillis
-            add(Calendar.DAY_OF_MONTH, 1)
+            add(unitOfTime, 1)
         }.timeInMillis
     }
+
 }
