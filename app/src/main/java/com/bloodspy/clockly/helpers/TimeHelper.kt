@@ -11,6 +11,8 @@ object TimeHelper {
     const val MILLIS_IN_HOUR = MILLIS_IN_MINUTE * 60
     const val MILLIS_IN_DAY = MILLIS_IN_HOUR * 24
 
+    const val DAYS_IN_WEEK = 7
+
     fun validateAlarmTime(timeInMillis: Long, isOneTimeAlarm: Boolean): Long {
         if (timeInMillis > Calendar.getInstance().timeInMillis) return timeInMillis
 

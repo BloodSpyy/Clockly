@@ -259,7 +259,11 @@ class AlarmFragment : Fragment() {
                     )
                 }
 
-                repetitionDays.joinToString()
+                if (repetitionDays.size == TimeHelper.DAYS_IN_WEEK) {
+                    getString(R.string.repetition_days_every_day_alarm)
+                } else {
+                    repetitionDays.joinToString()
+                }
             }
         }
     }

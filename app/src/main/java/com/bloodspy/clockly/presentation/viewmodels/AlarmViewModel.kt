@@ -45,6 +45,7 @@ class AlarmViewModel @Inject constructor(
     fun updateTimeToStart(daysOfWeek: List<Int>, hour: Int, minute: Int) {
         val isOneTimeAlarm = (daysOfWeek.isEmpty())
 
+        //todo объедини всё в один метод, если будешь такое часто использовать
         val validatedTimeInMillis = if (isOneTimeAlarm) {
             TimeHelper.validateAlarmTime(
                 TimeHelper.getMillisFromTimeParts(null, hour, minute), isOneTimeAlarm
