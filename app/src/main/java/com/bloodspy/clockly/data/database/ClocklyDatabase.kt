@@ -12,7 +12,7 @@ abstract class ClocklyDatabase: RoomDatabase() {
 
     companion object {
         private var db: ClocklyDatabase? = null
-        private const val DB_NAME = "clockly.db"
+        private const val DB_NAME = "clockyApp.db"
         private val LOCK = Any()
 
         fun getInstance(context: Context): ClocklyDatabase {

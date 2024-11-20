@@ -4,10 +4,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "alarms")
-data class AlarmModel (
+data class AlarmModel(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     val alarmTime: Long,
-    val isActive: Boolean
+    val isActive: Boolean,
+    val daysOfWeek: String?,
 )
-

@@ -1,5 +1,6 @@
 package com.bloodspy.clockly.helpers
 
+import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -13,12 +14,20 @@ object TimeHelper {
 
     const val DAYS_IN_WEEK = 7
 
-    fun validateAlarmTime(timeInMillis: Long, isOneTimeAlarm: Boolean): Long {
-        if (timeInMillis > Calendar.getInstance().timeInMillis) return timeInMillis
+    fun validateOneTimeAlarm(timeInMillis: Long): Long {
+        return if (timeInMillis <= Calendar.getInstance().timeInMillis) {
+            addUnitOfTimeToAlarmTime(timeInMillis, Calendar.DAY_OF_MONTH)
+        } else {
+            timeInMillis
+        }
+    }
 
-        val unitOfTimeToAdd = if (isOneTimeAlarm) Calendar.DAY_OF_MONTH else Calendar.WEEK_OF_MONTH
-
-        return addUnitOfTimeToAlarmTime(timeInMillis, unitOfTimeToAdd)
+    fun validateRepeatAlarm(timeInMillis: Long): Long {
+        return if (timeInMillis <= Calendar.getInstance().timeInMillis) {
+            addUnitOfTimeToAlarmTime(timeInMillis, Calendar.WEEK_OF_MONTH)
+        } else {
+            timeInMillis
+        }
     }
 
     fun getParsedTime(timeInMillis: Long, pattern: String = "HH:mm"): String {
@@ -74,7 +83,7 @@ object TimeHelper {
             this.timeInMillis = timeInMillis
         }
 
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val day = calendar.get(Calendar.DAY_OF_WEEK)
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
 

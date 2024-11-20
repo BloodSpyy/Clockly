@@ -8,13 +8,15 @@ class AlarmMapper @Inject constructor() {
     fun mapEntityToModel(alarmEntity: AlarmEntity): AlarmModel = AlarmModel(
         id = alarmEntity.id,
         alarmTime = alarmEntity.alarmTime,
-        isActive = alarmEntity.isActive
+        isActive = alarmEntity.isActive,
+        daysOfWeek = alarmEntity.daysOfWeek
     )
 
     fun mapModelToEntity(alarmModel: AlarmModel): AlarmEntity = AlarmEntity(
         id = alarmModel.id,
         alarmTime = alarmModel.alarmTime,
-        isActive = alarmModel.isActive
+        isActive = alarmModel.isActive,
+        daysOfWeek = alarmModel.daysOfWeek
     )
 
     fun mapListModelsToListEntities(models: List<AlarmModel>): List<AlarmEntity> {

@@ -64,10 +64,7 @@ class AlarmsViewModel @Inject constructor(
         viewModelScope.launch {
             val isActive = alarmEntity.isActive
             //todo тут я закостылил isOneTimeAlarm
-            val validatedAlarmTime = TimeHelper.validateAlarmTime(
-                alarmEntity.alarmTime,
-                false
-            )
+            val validatedAlarmTime = TimeHelper.validateOneTimeAlarm(alarmEntity.alarmTime)
 
             val newAlarmEntity = alarmEntity.copy(
                 alarmTime = validatedAlarmTime,

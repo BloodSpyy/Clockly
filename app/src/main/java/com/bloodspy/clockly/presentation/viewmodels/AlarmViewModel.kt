@@ -1,6 +1,5 @@
 package com.bloodspy.clockly.presentation.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bloodspy.clockly.domain.entities.AlarmEntity
@@ -29,59 +28,67 @@ class AlarmViewModel @Inject constructor(
         _state.value = AlarmStates.Loading
 
         viewModelScope.launch {
-            //todo тут я закостылил isOneAlarmTime
-            val validatedTimeInMillis = TimeHelper.validateAlarmTime(
-                getAlarmUseCase(alarmId)?.alarmTime ?: Calendar.getInstance().timeInMillis,
-                true
-            )
+            val alarm = getAlarmUseCase(alarmId)
+
+            val alarmTimeInMillis = alarm?.alarmTime ?: Calendar.getInstance().timeInMillis
+
+            val repeatingDays = alarm?.daysOfWeek?.split(",")?.map { it.toInt() }
+
+            //todo в будущем вернись сюда и проверь, что правильно устанавливается время для будильник
+            // объясняю почему: в бд для повторяющегося будильника у нас лежит самое его ближайшее
+            // время. Если оно прошло, то что будет выводиться потом, при get()?
+            val validatedTimeToStartInMillis = repeatingDays?.let {
+                TimeHelper.validateRepeatAlarm(alarmTimeInMillis)
+            } ?: TimeHelper.validateOneTimeAlarm(alarmTimeInMillis)
+
+//            старый код:
+//            val calendar = Calendar.getInstance()
+//
+//            val validatedTimeToStartInMillis = repeatingDays?.let { days ->
+//                days.minOf { day ->
+//                    TimeHelper.validateRepeatAlarm(
+//                        calendar.apply {
+//                            timeInMillis = alarmTimeInMillis
+//                            set(Calendar.DAY_OF_WEEK, day)
+//                        }.timeInMillis
+//                    )
+//                }
+//            } ?: TimeHelper.validateOneTimeAlarm(alarmTimeInMillis)
 
             _state.value = AlarmStates.DataLoaded(
-                TimeHelper.getTimeParts(validatedTimeInMillis),
-                TimeHelper.getParsedTimePartsToStart(validatedTimeInMillis)
+                TimeHelper.getTimeParts(alarmTimeInMillis),
+                TimeHelper.getParsedTimePartsToStart(validatedTimeToStartInMillis),
+                repeatingDays
             )
         }
     }
 
     fun updateTimeToStart(daysOfWeek: List<Int>, hour: Int, minute: Int) {
-        val isOneTimeAlarm = (daysOfWeek.isEmpty())
-
-        //todo объедини всё в один метод, если будешь такое часто использовать
-        val validatedTimeInMillis = if (isOneTimeAlarm) {
-            TimeHelper.validateAlarmTime(
-                TimeHelper.getMillisFromTimeParts(null, hour, minute), isOneTimeAlarm
-            )
-        } else {
-            daysOfWeek.minOf {
-                TimeHelper.validateAlarmTime(
-                    TimeHelper.getMillisFromTimeParts(it, hour, minute), isOneTimeAlarm
-                )
-            }
-        }
+        val validatedAlarmTimeInMillis = validateAlarmTime(daysOfWeek, hour, minute)
 
         _state.value = AlarmStates.DataLoaded(
-            TimeHelper.getTimeParts(validatedTimeInMillis),
-            TimeHelper.getParsedTimePartsToStart(validatedTimeInMillis)
+            TimeHelper.getTimeParts(validatedAlarmTimeInMillis),
+            TimeHelper.getParsedTimePartsToStart(validatedAlarmTimeInMillis),
+            daysOfWeek.takeIf { daysOfWeek.isNotEmpty() }
         )
     }
 
-    fun addAlarm(hour: Int, minute: Int) {
+    fun addAlarm(daysOfWeek: List<Int>, hour: Int, minute: Int) {
         _state.value = AlarmStates.Loading
 
+        val validatedAlarmTime = validateAlarmTime(daysOfWeek, hour, minute)
+
+        val validatedDaysOfWeek = validateDaysOfWeek(daysOfWeek)
+
         val alarm = AlarmEntity(
-            //todo тут я закостылил сегодняшний день + isOneTimeAlarm, так как дни ты ещё не учитываешь
-            alarmTime = TimeHelper.validateAlarmTime(
-                TimeHelper.getMillisFromTimeParts(
-                    Calendar.getInstance().get(Calendar.DAY_OF_MONTH),
-                    hour,
-                    minute
-                ),
-                false
-            )
+            alarmTime = validatedAlarmTime,
+            daysOfWeek = validatedDaysOfWeek
         )
 
         viewModelScope.launch {
             val alarmId = addAlarmUseCase(alarm).toInt()
 
+            //todo переделай планирование будильника в случае повторения
             scheduleAlarmUseCase(alarmId, alarm.alarmTime)
 
             _state.value = AlarmStates.Success(
@@ -90,29 +97,64 @@ class AlarmViewModel @Inject constructor(
         }
     }
 
-    fun editAlarm(alarmId: Int, hour: Int, minute: Int) {
+    fun editAlarm(alarmId: Int, daysOfWeek: List<Int>, hour: Int, minute: Int) {
         _state.value = AlarmStates.Loading
+
+        val validatedAlarmTime = validateAlarmTime(daysOfWeek, hour, minute)
+
+        val validatedDaysOfWeek = validateDaysOfWeek(daysOfWeek)
 
         val alarm = AlarmEntity(
             id = alarmId,
-            alarmTime = TimeHelper.validateAlarmTime(
-                //todo тут я закостылил сегодняшнее число + isOneTImeALarm, так как дни ты ещё не учитываешь
-                TimeHelper.getMillisFromTimeParts(
-                    Calendar.getInstance().get(Calendar.DAY_OF_MONTH),
-                    hour,
-                    minute
-                ),
-                false
-            )
+            alarmTime = validatedAlarmTime,
+            daysOfWeek = validatedDaysOfWeek
         )
 
         viewModelScope.launch {
             editAlarmUseCase(alarm)
 
+            //todo переделай планирование будильника в случае повторения
             scheduleAlarmUseCase(alarmId, alarm.alarmTime)
 
             _state.value = AlarmStates.Success(
                 TimeHelper.getParsedTimePartsToStart(alarm.alarmTime)
+            )
+        }
+    }
+
+    private fun validateDaysOfWeek(daysOfWeek: List<Int>): String? {
+        return daysOfWeek
+            .takeIf { daysOfWeek.isNotEmpty() }
+            ?.joinToString(",")
+    }
+
+    private fun validateAlarmTime(
+        daysOfWeek: List<Int>,
+        hour: Int,
+        minute: Int,
+    ): Long {
+        // if daysOfWeek.isEmpty -> one time alarm
+        return if (daysOfWeek.isEmpty()) {
+            getValidatedOneTimeAlarmTime(hour, minute)
+        } else {
+            getValidatedNearestRepeatAlarmTime(daysOfWeek, hour, minute)
+        }
+    }
+
+    private fun getValidatedOneTimeAlarmTime(hour: Int, minute: Int): Long {
+        return TimeHelper.validateOneTimeAlarm(
+            TimeHelper.getMillisFromTimeParts(null, hour, minute)
+        )
+    }
+
+    private fun getValidatedNearestRepeatAlarmTime(
+        daysOfWeek: List<Int>,
+        hour: Int,
+        minute: Int,
+    ): Long {
+        return daysOfWeek.minOf {
+            TimeHelper.validateRepeatAlarm(
+                TimeHelper.getMillisFromTimeParts(it, hour, minute)
             )
         }
     }

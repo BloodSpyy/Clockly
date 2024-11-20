@@ -3,6 +3,7 @@ package com.bloodspy.clockly.presentation.fragments
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,15 +47,12 @@ class AlarmFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         injectDependency()
-
         checkImplementListener(context)
-
         super.onAttach(context)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         parseParams()
     }
 
@@ -75,7 +73,6 @@ class AlarmFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         subscribeViewModel()
         setupAlarmTitle()
         setup24HourView()
@@ -86,7 +83,6 @@ class AlarmFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-
         _binding = null
     }
 
@@ -113,6 +109,8 @@ class AlarmFragment : Fragment() {
                             is AlarmStates.DataLoaded -> {
                                 setupTimePicker(it.alarmTimeParts)
                                 setupTimeToAlarm(it.timeToAlarmParts)
+                                setupRepeatingDays(it.repeatingDays)
+
                                 setupRepetitionDays()
                             }
 
@@ -174,12 +172,13 @@ class AlarmFragment : Fragment() {
     private fun setupSaveClickListener() {
         with(binding) {
             textViewSave.setOnClickListener {
+                val daysOfWeek = getDaysOfWeekFromCheckedChipIds(chipGroupDaysOfWeek.checkedChipIds)
                 val hour = timePickerAlarm.hour
                 val minute = timePickerAlarm.minute
 
                 when (screenMode) {
-                    ScreenMode.ADD_MODE -> viewModel.addAlarm(hour, minute)
-                    ScreenMode.EDIT_MODE -> viewModel.editAlarm(alarmId, hour, minute)
+                    ScreenMode.ADD_MODE -> viewModel.addAlarm(daysOfWeek, hour, minute)
+                    ScreenMode.EDIT_MODE -> viewModel.editAlarm(alarmId, daysOfWeek, hour, minute)
                 }
             }
         }
@@ -204,23 +203,6 @@ class AlarmFragment : Fragment() {
 
     }
 
-    private fun getDaysOfWeekFromCheckedChipIds(chipIds: List<Int>): List<Int> {
-        return chipIds.map {
-            with(binding) {
-                when (it) {
-                    chipSunday.id -> Calendar.SUNDAY
-                    chipMonday.id -> Calendar.MONDAY
-                    chipTuesday.id -> Calendar.TUESDAY
-                    chipWednesday.id -> Calendar.WEDNESDAY
-                    chipThursday.id -> Calendar.THURSDAY
-                    chipFriday.id -> Calendar.FRIDAY
-                    chipSaturday.id -> Calendar.SATURDAY
-                    else -> throw RuntimeException("Unkwown chip id")
-                }
-            }
-        }
-    }
-
     private fun setupTimePicker(alarmTimeParts: Array<Int>) {
         with(binding.timePickerAlarm) {
             hour = alarmTimeParts[1]
@@ -233,7 +215,20 @@ class AlarmFragment : Fragment() {
             text = getCompletedStringTimeToStartAlarm(
                 timeToAlarmParts
             )
+
             visibility = View.VISIBLE
+        }
+    }
+
+    private fun setupRepeatingDays(repeatingDays: List<Int>?) {
+        repeatingDays?.let {
+            with(binding) {
+                val chipIds = getChipIdsFromDaysOfWeek(it)
+
+                chipIds.forEach {
+                    chipGroupDaysOfWeek.check(it)
+                }
+            }
         }
     }
 
@@ -242,22 +237,9 @@ class AlarmFragment : Fragment() {
             textViewRepetitionDays.text = if (chipGroupDaysOfWeek.checkedChipIds.isEmpty()) {
                 getString(R.string.repetition_days_one_time_alarm)
             } else {
-                val repetitionDays = mutableListOf<String>()
-
-                chipGroupDaysOfWeek.checkedChipIds.forEach {
-                    repetitionDays.add(
-                        when (it) {
-                            chipSunday.id -> getString(R.string.repetition_days_sunday)
-                            chipMonday.id -> getString(R.string.repetition_days_monday)
-                            chipTuesday.id -> getString(R.string.repetition_days_tuesday)
-                            chipWednesday.id -> getString(R.string.repetition_days_wednesday)
-                            chipThursday.id -> getString(R.string.repetition_days_thursday)
-                            chipFriday.id -> getString(R.string.repetition_days_friday)
-                            chipSaturday.id -> getString(R.string.repetition_days_saturday)
-                            else -> throw RuntimeException("Unkwown chip id")
-                        }
-                    )
-                }
+                val repetitionDays = getRepetitionDaysFromChipIds(
+                    chipGroupDaysOfWeek.checkedChipIds
+                )
 
                 if (repetitionDays.size == TimeHelper.DAYS_IN_WEEK) {
                     getString(R.string.repetition_days_every_day_alarm)
@@ -289,6 +271,57 @@ class AlarmFragment : Fragment() {
             timeToAlarm,
             Toast.LENGTH_SHORT
         ).show()
+    }
+
+    private fun getDaysOfWeekFromCheckedChipIds(chipIds: List<Int>): List<Int> {
+        return chipIds.map { chipId ->
+            with(binding) {
+                when (chipId) {
+                    chipSunday.id -> Calendar.SUNDAY
+                    chipMonday.id -> Calendar.MONDAY
+                    chipTuesday.id -> Calendar.TUESDAY
+                    chipWednesday.id -> Calendar.WEDNESDAY
+                    chipThursday.id -> Calendar.THURSDAY
+                    chipFriday.id -> Calendar.FRIDAY
+                    chipSaturday.id -> Calendar.SATURDAY
+                    else -> throw RuntimeException("Unkwown chip id")
+                }
+            }
+        }
+    }
+
+    private fun getChipIdsFromDaysOfWeek(daysOfWeek: List<Int>): List<Int> {
+        return daysOfWeek.map { dayOfWeek ->
+            with(binding) {
+                when (dayOfWeek) {
+                    Calendar.SUNDAY -> chipSunday.id
+                    Calendar.MONDAY -> chipMonday.id
+                    Calendar.TUESDAY -> chipTuesday.id
+                    Calendar.WEDNESDAY -> chipWednesday.id
+                    Calendar.THURSDAY -> chipThursday.id
+                    Calendar.FRIDAY -> chipFriday.id
+                    Calendar.SATURDAY -> chipSaturday.id
+                    else -> throw RuntimeException("Unknown day of week: $dayOfWeek")
+                }
+            }
+        }
+    }
+
+    private fun getRepetitionDaysFromChipIds(checkedChipIds: List<Int>): List<String> {
+        return with(binding) {
+            checkedChipIds.map { chipId ->
+                when (chipId) {
+                    chipSunday.id -> getString(R.string.repetition_days_sunday)
+                    chipMonday.id -> getString(R.string.repetition_days_monday)
+                    chipTuesday.id -> getString(R.string.repetition_days_tuesday)
+                    chipWednesday.id -> getString(R.string.repetition_days_wednesday)
+                    chipThursday.id -> getString(R.string.repetition_days_thursday)
+                    chipFriday.id -> getString(R.string.repetition_days_friday)
+                    chipSaturday.id -> getString(R.string.repetition_days_saturday)
+                    else -> throw RuntimeException("Unkwown chip id")
+                }
+            }
+        }
     }
 
     private fun parseParams() {
