@@ -1,5 +1,6 @@
 package com.bloodspy.clockly.presentation.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bloodspy.clockly.domain.entities.AlarmEntity
@@ -26,6 +27,8 @@ class AlarmViewModel @Inject constructor(
     val state = _state.asStateFlow()
 
     fun getAlarm(alarmId: Int) {
+        Log.d(LOG_TAG, "getAlarm() started")
+
         _state.value = AlarmStates.Loading
 
         viewModelScope.launch {
@@ -45,9 +48,13 @@ class AlarmViewModel @Inject constructor(
                 repeatingDays
             )
         }
+
+        Log.d(LOG_TAG, "getAlarm() ended")
     }
 
     fun updateTimeToStart(daysOfWeek: List<Int>, hour: Int, minute: Int) {
+        Log.d(LOG_TAG, "updateTimeToStart() started")
+
         val validatedAlarmTimeInMillis = validateAlarmTime(daysOfWeek, hour, minute)
 
         _state.value = AlarmStates.DataLoaded(
@@ -55,9 +62,13 @@ class AlarmViewModel @Inject constructor(
             TimeHelper.getParsedTimePartsToStart(validatedAlarmTimeInMillis),
             daysOfWeek.takeIf { daysOfWeek.isNotEmpty() }
         )
+
+        Log.d(LOG_TAG, "updateTimeToStart() ended")
     }
 
     fun addAlarm(daysOfWeek: List<Int>, hour: Int, minute: Int) {
+        Log.d(LOG_TAG, "addAlarm() started")
+
         _state.value = AlarmStates.Loading
 
         val validatedAlarmTime = validateAlarmTime(daysOfWeek, hour, minute)
@@ -78,9 +89,13 @@ class AlarmViewModel @Inject constructor(
                 TimeHelper.getParsedTimePartsToStart(alarm.alarmTime)
             )
         }
+
+        Log.d(LOG_TAG, "addAlarm() ended")
     }
 
     fun editAlarm(alarmId: Int, daysOfWeek: List<Int>, hour: Int, minute: Int) {
+        Log.d(LOG_TAG, "editAlarm() started")
+
         _state.value = AlarmStates.Loading
 
         val validatedAlarmTime = validateAlarmTime(daysOfWeek, hour, minute)
@@ -102,6 +117,8 @@ class AlarmViewModel @Inject constructor(
                 TimeHelper.getParsedTimePartsToStart(alarm.alarmTime)
             )
         }
+
+        Log.d(LOG_TAG, "editAlarm() ended")
     }
 
     private fun validateDaysOfWeek(daysOfWeek: List<Int>): String? {
@@ -139,5 +156,9 @@ class AlarmViewModel @Inject constructor(
                 TimeHelper.getMillisFromTimeParts(it, hour, minute)
             )
         }
+    }
+
+    companion object {
+        private const val LOG_TAG = "AlarmViewModel"
     }
 }

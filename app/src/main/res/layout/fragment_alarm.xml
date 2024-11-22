@@ -79,6 +79,7 @@
         style="@style/chipOnLightGrayBackground"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:checkable="true"
         android:contentDescription="@string/chip_repeating_alarm"
         android:text="@string/chip_repeating_alarm"
         app:layout_constraintBottom_toTopOf="@id/linearLayoutDaysOfWeek"

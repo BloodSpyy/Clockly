@@ -72,12 +72,12 @@ class AlarmFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        subscribeViewModel()
+        setupClickListeners()
         setupAlarmTitle()
         setup24HourView()
-        setupClickListeners()
         setupTimeChangedListener()
         setupChipGroupDaysOfWeekListener()
+        subscribeViewModel()
     }
 
     override fun onDestroyView() {
@@ -110,6 +110,10 @@ class AlarmFragment : Fragment() {
                                 setupTimeToAlarm(it.timeToAlarmParts)
                                 setupRepeatingDays(it.repeatingDays)
 
+                                if (it.repeatingDays != null) {
+                                    chipRepeatingAlarm.isChecked = true
+                                }
+
                                 setupRepetitionDays()
                             }
 
@@ -141,7 +145,7 @@ class AlarmFragment : Fragment() {
     private fun setupClickListeners() {
         setupSaveClickListener()
         setupCancelClickListener()
-        setupChipRepeatingAlarmClickListener()
+        setupChipRepeatingAlarmListener()
     }
 
     private fun setupChipGroupDaysOfWeekListener() {
@@ -156,10 +160,10 @@ class AlarmFragment : Fragment() {
         }
     }
 
-    private fun setupChipRepeatingAlarmClickListener() {
+    private fun setupChipRepeatingAlarmListener() {
         with(binding) {
-            chipRepeatingAlarm.setOnClickListener {
-                linearLayoutDaysOfWeek.visibility = if (chipRepeatingAlarm.isChecked) {
+            chipRepeatingAlarm.setOnCheckedChangeListener { _, isChecked ->
+                linearLayoutDaysOfWeek.visibility = if (isChecked) {
                     View.VISIBLE
                 } else {
                     View.GONE
@@ -171,13 +175,19 @@ class AlarmFragment : Fragment() {
     private fun setupSaveClickListener() {
         with(binding) {
             textViewSave.setOnClickListener {
-                val daysOfWeek = getDaysOfWeekFromCheckedChipIds(chipGroupDaysOfWeek.checkedChipIds)
+                val daysOfWeek =
+                    getDaysOfWeekFromCheckedChipIds(chipGroupDaysOfWeek.checkedChipIds)
                 val hour = timePickerAlarm.hour
                 val minute = timePickerAlarm.minute
 
                 when (screenMode) {
                     ScreenMode.ADD_MODE -> viewModel.addAlarm(daysOfWeek, hour, minute)
-                    ScreenMode.EDIT_MODE -> viewModel.editAlarm(alarmId, daysOfWeek, hour, minute)
+                    ScreenMode.EDIT_MODE -> viewModel.editAlarm(
+                        alarmId,
+                        daysOfWeek,
+                        hour,
+                        minute
+                    )
                 }
             }
         }
