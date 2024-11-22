@@ -1,6 +1,5 @@
 package com.bloodspy.clockly.helpers
 
-import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -78,16 +77,15 @@ object TimeHelper {
         return calendar.timeInMillis
     }
 
-    fun getTimeParts(timeInMillis: Long): Array<Int> {
+    fun getHourAndMinuteFromAlarmTime(timeInMillis: Long): Pair<Int, Int> {
         val calendar = Calendar.getInstance().apply {
             this.timeInMillis = timeInMillis
         }
 
-        val day = calendar.get(Calendar.DAY_OF_WEEK)
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
 
-        return arrayOf(day, hour, minute)
+        return Pair(hour, minute)
     }
 
     private fun getTimeToStart(timeInMillis: Long): Long {

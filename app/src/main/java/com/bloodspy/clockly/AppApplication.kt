@@ -12,7 +12,6 @@ class AppApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
         NotificationChannelsHelper.createNotificationChannels(this)
     }
 }

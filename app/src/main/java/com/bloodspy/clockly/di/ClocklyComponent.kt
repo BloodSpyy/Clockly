@@ -1,6 +1,7 @@
 package com.bloodspy.clockly.di
 
 import android.app.Application
+import com.bloodspy.clockly.AppApplication
 import com.bloodspy.clockly.di.modules.DataModule
 import com.bloodspy.clockly.di.modules.DomainModule
 import com.bloodspy.clockly.di.modules.ViewModelModule

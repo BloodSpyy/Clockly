@@ -9,6 +9,7 @@ import com.bloodspy.clockly.domain.usecases.GetAlarmUseCase
 import com.bloodspy.clockly.domain.usecases.ScheduleAlarmUseCase
 import com.bloodspy.clockly.helpers.TimeHelper
 import com.bloodspy.clockly.presentation.states.AlarmStates
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -34,29 +35,12 @@ class AlarmViewModel @Inject constructor(
 
             val repeatingDays = alarm?.daysOfWeek?.split(",")?.map { it.toInt() }
 
-            //todo в будущем вернись сюда и проверь, что правильно устанавливается время для будильник
-            // объясняю почему: в бд для повторяющегося будильника у нас лежит самое его ближайшее
-            // время. Если оно прошло, то что будет выводиться потом, при get()?
             val validatedTimeToStartInMillis = repeatingDays?.let {
                 TimeHelper.validateRepeatAlarm(alarmTimeInMillis)
             } ?: TimeHelper.validateOneTimeAlarm(alarmTimeInMillis)
 
-//            старый код:
-//            val calendar = Calendar.getInstance()
-//
-//            val validatedTimeToStartInMillis = repeatingDays?.let { days ->
-//                days.minOf { day ->
-//                    TimeHelper.validateRepeatAlarm(
-//                        calendar.apply {
-//                            timeInMillis = alarmTimeInMillis
-//                            set(Calendar.DAY_OF_WEEK, day)
-//                        }.timeInMillis
-//                    )
-//                }
-//            } ?: TimeHelper.validateOneTimeAlarm(alarmTimeInMillis)
-
             _state.value = AlarmStates.DataLoaded(
-                TimeHelper.getTimeParts(alarmTimeInMillis),
+                TimeHelper.getHourAndMinuteFromAlarmTime(alarmTimeInMillis),
                 TimeHelper.getParsedTimePartsToStart(validatedTimeToStartInMillis),
                 repeatingDays
             )
@@ -67,7 +51,7 @@ class AlarmViewModel @Inject constructor(
         val validatedAlarmTimeInMillis = validateAlarmTime(daysOfWeek, hour, minute)
 
         _state.value = AlarmStates.DataLoaded(
-            TimeHelper.getTimeParts(validatedAlarmTimeInMillis),
+            TimeHelper.getHourAndMinuteFromAlarmTime(validatedAlarmTimeInMillis),
             TimeHelper.getParsedTimePartsToStart(validatedAlarmTimeInMillis),
             daysOfWeek.takeIf { daysOfWeek.isNotEmpty() }
         )
@@ -88,7 +72,6 @@ class AlarmViewModel @Inject constructor(
         viewModelScope.launch {
             val alarmId = addAlarmUseCase(alarm).toInt()
 
-            //todo переделай планирование будильника в случае повторения
             scheduleAlarmUseCase(alarmId, alarm.alarmTime)
 
             _state.value = AlarmStates.Success(
@@ -113,7 +96,6 @@ class AlarmViewModel @Inject constructor(
         viewModelScope.launch {
             editAlarmUseCase(alarm)
 
-            //todo переделай планирование будильника в случае повторения
             scheduleAlarmUseCase(alarmId, alarm.alarmTime)
 
             _state.value = AlarmStates.Success(

@@ -45,9 +45,7 @@ class AlarmsFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         injectDependency()
-
         checkImplementListeners(context)
-
         super.onAttach(context)
     }
 
@@ -68,6 +66,7 @@ class AlarmsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        validateActivatedAlarms()
         subscribeViewModel()
         setupRecyclerView()
         setupAdapterListeners()
@@ -218,6 +217,10 @@ class AlarmsFragment : Fragment() {
         }
 
         ItemTouchHelper(callback).attachToRecyclerView(binding.recyclerViewAlarms)
+    }
+
+    private fun validateActivatedAlarms() {
+        viewModel.validateActivatedAlarms()
     }
 
     private fun checkImplementListeners(context: Context) {

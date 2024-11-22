@@ -12,8 +12,12 @@ class AlarmRepositoryImpl @Inject constructor(
     private val alarmDao: AlarmDao,
     private val mapper: AlarmMapper,
 ) : AlarmRepository {
-    override fun getAlarms(): Flow<List<AlarmEntity>> {
-        return alarmDao.getAlarms().map { mapper.mapListModelsToListEntities(it) }
+    override fun getAlarmsFlow(): Flow<List<AlarmEntity>> {
+        return alarmDao.getAlarmsFlow().map { mapper.mapListModelsToListEntities(it) }
+    }
+
+    override suspend fun getActivatedAlarms(): List<AlarmEntity>? {
+        return alarmDao.getActivatedAlarms()?.map { mapper.mapModelToEntity(it) }
     }
 
     override suspend fun getAlarm(alarmId: Int): AlarmEntity? {

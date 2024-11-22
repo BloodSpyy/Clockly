@@ -4,7 +4,7 @@ import android.app.AlarmManager
 import android.app.Application
 import android.content.Context.ALARM_SERVICE
 import com.bloodspy.clockly.domain.repositories.AlarmSchedulerRepository
-import com.bloodspy.clockly.helpers.AlarmServiceHelper.getStartAlarmServicePendingIntent
+import com.bloodspy.clockly.helpers.AlarmServiceHelper
 import javax.inject.Inject
 
 class AlarmSchedulerRepositoryImpl @Inject constructor(
@@ -15,11 +15,13 @@ class AlarmSchedulerRepositoryImpl @Inject constructor(
     override fun schedule(alarmId: Int, timeInMillis: Long) {
         alarmManager.setAlarmClock(
             AlarmManager.AlarmClockInfo(timeInMillis, null),
-            getStartAlarmServicePendingIntent(application, alarmId)
+            AlarmServiceHelper.getStartAlarmServicePendingIntent(application, alarmId)
         )
     }
 
     override fun cancel(alarmId: Int) {
-        alarmManager.cancel(getStartAlarmServicePendingIntent(application, alarmId))
+        alarmManager.cancel(
+            AlarmServiceHelper.getStopAlarmServicePendingIntent(application, alarmId)
+        )
     }
 }

@@ -10,7 +10,9 @@ import androidx.core.app.NotificationCompat
 import com.bloodspy.clockly.AppApplication
 import com.bloodspy.clockly.R
 import com.bloodspy.clockly.domain.entities.AlarmEntity
-import com.bloodspy.clockly.domain.repositories.AlarmRepository
+import com.bloodspy.clockly.domain.usecases.EditAlarmUseCase
+import com.bloodspy.clockly.domain.usecases.GetAlarmUseCase
+import com.bloodspy.clockly.domain.usecases.ScheduleAlarmUseCase
 import com.bloodspy.clockly.helpers.AlarmServiceHelper
 import com.bloodspy.clockly.helpers.NotificationChannelsHelper.ALARM_NOTIFICATION_CHANNEL_ID
 import com.bloodspy.clockly.helpers.RingtoneMediaPlayerHelper
@@ -24,7 +26,13 @@ import javax.inject.Inject
 
 class AlarmService : Service() {
     @Inject
-    lateinit var alarmRepository: AlarmRepository
+    lateinit var getAlarmUseCase: GetAlarmUseCase
+
+    @Inject
+    lateinit var editAlarmUseCase: EditAlarmUseCase
+
+    @Inject
+    lateinit var scheduleAlarmUseCase: ScheduleAlarmUseCase
 
     private lateinit var action: String
 
@@ -40,20 +48,17 @@ class AlarmService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-
         injectDependency()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         parseIntent(intent)
-
         chooseAction()
-
         return START_REDELIVER_INTENT
     }
 
     override fun onDestroy() {
-        stopAlarm()
+        scope.cancel()
 
         super.onDestroy()
     }
@@ -65,7 +70,7 @@ class AlarmService : Service() {
             }
 
             STOP_ACTION -> {
-                stopSelf()
+                stopAlarm()
             }
         }
     }
@@ -75,26 +80,15 @@ class AlarmService : Service() {
             ALARM_NOTIFICATION_ID,
             createNotification()
         )
-
         ringtoneMediaPlayer.start()
-
-        setInactiveAlarmStatus()
     }
 
     private fun stopAlarm() {
         ringtoneMediaPlayer.stop()
 
-        scope.cancel()
-    }
+        val updateAlarmJob = scope.launch { updateAlarm() }
 
-    private fun setInactiveAlarmStatus() {
-        scope.launch {
-            val alarm = alarmRepository.getAlarm(alarmId)
-
-            alarm?.let {
-                alarmRepository.editAlarm(it.copy(isActive = false))
-            }
-        }
+        updateAlarmJob.invokeOnCompletion { stopSelf() }
     }
 
     private fun createNotification(): Notification {
@@ -125,6 +119,52 @@ class AlarmService : Service() {
                 )
             )
             .build()
+    }
+
+    private suspend fun updateAlarm() {
+        val alarm = getAlarmUseCase(alarmId)
+
+        alarm?.let {
+            val changedAlarm = if (alarm.daysOfWeek != null) {
+                handleRepeatingAlarm(alarm)
+            } else {
+                alarm.copy(isActive = false)
+            }
+
+            editAlarmUseCase(changedAlarm)
+        }
+    }
+
+    private fun handleRepeatingAlarm(alarm: AlarmEntity): AlarmEntity {
+        alarm.daysOfWeek?.let { daysOfWeek ->
+            val newAlarmTime = getValidatedNearestRepeatAlarmTime(
+                daysOfWeek, alarm.alarmTime
+            )
+
+            scheduleAlarmUseCase(alarm.id, newAlarmTime)
+
+            return alarm.copy(alarmTime = newAlarmTime)
+        } ?: throw RuntimeException("This method should be used only on repeating alarm")
+    }
+
+    private fun getValidatedNearestRepeatAlarmTime(
+        daysOfWeek: String,
+        timeInMillis: Long,
+    ): Long {
+        val calendar = java.util.Calendar.getInstance()
+
+        val daysOfWeekList = daysOfWeek.split(",").map { it.toInt() }
+
+        val validatedNearestRepeatAlarmTime = daysOfWeekList.minOf { day ->
+            TimeHelper.validateRepeatAlarm(
+                calendar.apply {
+                    this.timeInMillis = timeInMillis
+                    set(java.util.Calendar.DAY_OF_WEEK, day)
+                }.timeInMillis
+            )
+        }
+
+        return validatedNearestRepeatAlarmTime
     }
 
     private fun injectDependency() {

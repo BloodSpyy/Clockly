@@ -3,7 +3,6 @@ package com.bloodspy.clockly.presentation.fragments
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -107,7 +106,7 @@ class AlarmFragment : Fragment() {
                             }
 
                             is AlarmStates.DataLoaded -> {
-                                setupTimePicker(it.alarmTimeParts)
+                                setupTimePicker(it.alarmHourAndMinute)
                                 setupTimeToAlarm(it.timeToAlarmParts)
                                 setupRepeatingDays(it.repeatingDays)
 
@@ -203,10 +202,10 @@ class AlarmFragment : Fragment() {
 
     }
 
-    private fun setupTimePicker(alarmTimeParts: Array<Int>) {
+    private fun setupTimePicker(alarmHourAndMinute: Pair<Int, Int>) {
         with(binding.timePickerAlarm) {
-            hour = alarmTimeParts[1]
-            minute = alarmTimeParts[2]
+            hour = alarmHourAndMinute.first
+            minute = alarmHourAndMinute.second
         }
     }
 

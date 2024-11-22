@@ -6,7 +6,7 @@ sealed class AlarmStates {
     data object Loading : AlarmStates()
 
     data class DataLoaded(
-        val alarmTimeParts: Array<Int>,
+        val alarmHourAndMinute: Pair<Int, Int>,
         val timeToAlarmParts: Array<Int>,
         val repeatingDays: List<Int>?,
     ) : AlarmStates()

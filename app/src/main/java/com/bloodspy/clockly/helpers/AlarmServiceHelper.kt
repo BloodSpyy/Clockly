@@ -30,7 +30,7 @@ object AlarmServiceHelper {
 
     fun getStopAlarmServicePendingIntent(
         context: Context,
-        alarmId: Int
+        alarmId: Int,
     ): PendingIntent =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             PendingIntent.getForegroundService(

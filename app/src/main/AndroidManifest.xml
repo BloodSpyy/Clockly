@@ -33,6 +33,12 @@
             android:name="com.bloodspy.clockly.services.AlarmService"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback" />
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="androidx.work.WorkManagerInitializer"
+            tools:node="remove"
+            tools:replace="android:authorities" />
     </application>
 
 </manifest>

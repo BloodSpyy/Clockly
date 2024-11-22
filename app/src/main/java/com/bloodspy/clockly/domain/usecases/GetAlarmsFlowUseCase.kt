@@ -5,8 +5,8 @@ import com.bloodspy.clockly.domain.repositories.AlarmRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetAlarmsUseCase @Inject constructor(private val alarmRepository: AlarmRepository) {
+class GetAlarmsFlowUseCase @Inject constructor(private val alarmRepository: AlarmRepository) {
     operator fun invoke(): Flow<List<AlarmEntity>> {
-        return alarmRepository.getAlarms()
+        return alarmRepository.getAlarmsFlow()
     }
 }
