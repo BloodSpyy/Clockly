@@ -1,9 +1,12 @@
 package com.bloodspy.clockly.presentation.recyclerViewUtils.adapter
 
-import android.util.Log
+import android.content.Context
+import android.icu.util.Calendar
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.getString
 import androidx.recyclerview.widget.ListAdapter
+import com.bloodspy.clockly.R
 import com.bloodspy.clockly.databinding.ItemAlarmBinding
 import com.bloodspy.clockly.domain.entities.AlarmEntity
 import com.bloodspy.clockly.helpers.TimeHelper
@@ -41,9 +44,40 @@ class AlarmsAdapter : ListAdapter<AlarmEntity, AlarmsViewHolder>(
                 )
             }
 
-            //todo подумай как убрать здесь преобразования и перенести их отсюда
             textViewAlarmTime.text = TimeHelper.getParsedTime(alarm.alarmTime)
             switchAlarm.isChecked = alarm.isActive
+            textViewRepetitionDays.text =
+                getRepetitionDays(holder.itemView.context, alarm.daysOfWeek)
+        }
+    }
+
+    private fun getRepetitionDays(context: Context, daysOfWeek: String?): String {
+        return if (daysOfWeek == null) {
+            getString(context, R.string.repetition_days_one_time_alarm)
+        } else {
+            val repetitionDays = getRepetitionDaysFromDaysOfWeek(context, daysOfWeek)
+
+            if (repetitionDays.size == TimeHelper.DAYS_IN_WEEK) {
+                getString(context, R.string.repetition_days_every_day_alarm)
+            } else {
+                repetitionDays.joinToString()
+            }
+        }
+    }
+
+    private fun getRepetitionDaysFromDaysOfWeek(
+        context: Context,
+        daysOfWeek: String,
+    ): List<String> = daysOfWeek.split(",").map { dayOfWeek ->
+        when (dayOfWeek.toInt()) {
+            Calendar.SUNDAY -> getString(context, R.string.repetition_days_sunday)
+            Calendar.MONDAY -> getString(context, R.string.repetition_days_monday)
+            Calendar.TUESDAY -> getString(context, R.string.repetition_days_tuesday)
+            Calendar.WEDNESDAY -> getString(context, R.string.repetition_days_wednesday)
+            Calendar.THURSDAY -> getString(context, R.string.repetition_days_thursday)
+            Calendar.FRIDAY -> getString(context, R.string.repetition_days_friday)
+            Calendar.SATURDAY -> getString(context, R.string.repetition_days_saturday)
+            else -> throw RuntimeException("Unknown day of week: $dayOfWeek")
         }
     }
 }

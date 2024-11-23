@@ -44,7 +44,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewNearestAlarmTime"
-        tools:itemCount="1"
+        tools:itemCount="2"
         tools:listitem="@layout/item_alarm" />
 
     <ImageButton
@@ -92,15 +92,6 @@
             android:background="@color/white"
             android:contentDescription="@string/alarm_button_content_description"
             android:src="@drawable/logo_alarm_active" />
-
-        <ImageButton
-            android:id="@+id/imageButtonStopwatch"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:background="@color/white"
-            android:contentDescription="@string/stopwatch_button_content_description"
-            android:src="@drawable/logo_stopwatch_inactive" />
 
         <ImageButton
             android:id="@+id/imageButtonWeather"

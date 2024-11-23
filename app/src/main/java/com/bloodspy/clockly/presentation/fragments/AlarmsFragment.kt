@@ -106,19 +106,12 @@ class AlarmsFragment : Fragment() {
 
     private fun setupOnClickListeners() {
         setupAddAlarmClickListener()
-        setupStopwatchClickListener()
         setupWeatherClickListener()
     }
 
     private fun setupAddAlarmClickListener() {
         binding.imageViewAddAlarm.setOnClickListener {
             onAddButtonClickListener.onAddButtonClick()
-        }
-    }
-
-    private fun setupStopwatchClickListener() {
-        binding.imageButtonStopwatch.setOnClickListener {
-            //todo делай интент в StopwatchFragment
         }
     }
 
