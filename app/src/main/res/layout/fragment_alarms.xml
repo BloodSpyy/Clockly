@@ -40,7 +40,7 @@
         android:layout_height="0dp"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@id/linearLayoutMenu"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewNearestAlarmTime"
@@ -54,7 +54,7 @@
         android:layout_marginBottom="15dp"
         android:background="@drawable/shape_add_button"
         android:contentDescription="@string/add_alarm_button_content_description"
-        app:layout_constraintBottom_toTopOf="@id/linearLayoutMenu"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/logo_add_button" />
@@ -72,34 +72,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
-
-    <LinearLayout
-        android:id="@+id/linearLayoutMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="horizontal"
-        android:padding="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <ImageButton
-            android:id="@+id/imageButtonAlarm"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:background="@color/white"
-            android:contentDescription="@string/alarm_button_content_description"
-            android:src="@drawable/logo_alarm_active" />
-
-        <ImageButton
-            android:id="@+id/imageButtonWeather"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:background="@color/white"
-            android:contentDescription="@string/weather_button_content_description"
-            android:src="@drawable/logo_weather_inactive" />
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

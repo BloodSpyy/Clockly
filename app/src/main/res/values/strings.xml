@@ -2,8 +2,6 @@
     <string name="app_name">Clockly</string>
 
     <string name="add_alarm_button_content_description">Добавить будильник</string>
-    <string name="alarm_button_content_description">Будильник</string>
-    <string name="weather_button_content_description">Погода</string>
     <string name="cancel_button_content_description">Отменить</string>
     <string name="save_button_content_description">Сохранить</string>
 

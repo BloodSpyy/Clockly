@@ -5,7 +5,11 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.icu.util.Calendar
+import android.os.Build
 import android.os.IBinder
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import androidx.core.app.NotificationCompat
 import com.bloodspy.clockly.AppApplication
 import com.bloodspy.clockly.R
@@ -40,6 +44,16 @@ class AlarmService : Service() {
 
     private val ringtoneMediaPlayer by lazy {
         RingtoneMediaPlayerHelper.createRingtoneMediaPlayer(this)
+    }
+
+    private val vibrator by lazy {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val vibratorManager = getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            vibratorManager.defaultVibrator
+        } else {
+            @Suppress("DEPRECATION")
+            getSystemService(VIBRATOR_SERVICE) as Vibrator
+        }
     }
 
     private var alarmId = AlarmEntity.UNDEFINED_ID
@@ -80,11 +94,14 @@ class AlarmService : Service() {
             ALARM_NOTIFICATION_ID,
             createNotification()
         )
+
         ringtoneMediaPlayer.start()
+        startVibration()
     }
 
     private fun stopAlarm() {
         ringtoneMediaPlayer.stop()
+        vibrator.cancel()
 
         val updateAlarmJob = scope.launch { updateAlarm() }
 
@@ -167,6 +184,19 @@ class AlarmService : Service() {
         return validatedNearestRepeatAlarmTime
     }
 
+    private fun startVibration() {
+        val vibrationPattern = longArrayOf(VIBRATION_DELAY, VIBRATION_TIME, VIBRATION_SLEEP)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(
+                VibrationEffect.createWaveform(vibrationPattern, REPEAT_INDEFINITELY)
+            )
+        } else {
+            @Suppress("DEPRECATION")
+            vibrator.vibrate(vibrationPattern, REPEAT_INDEFINITELY)
+        }
+    }
+
     private fun injectDependency() {
         (this.application as AppApplication).component
             .inject(this)
@@ -197,6 +227,12 @@ class AlarmService : Service() {
     }
 
     companion object {
+        private const val VIBRATION_DELAY = 0L
+        private const val VIBRATION_TIME = 1000L
+        private const val VIBRATION_SLEEP = 700L
+
+        private const val REPEAT_INDEFINITELY = 0
+
         private const val ALARM_NOTIFICATION_ID = 1
 
         private const val EXTRA_ACTION = "action"
